@@ -1,0 +1,257 @@
+(in-package :aml)
+
+(define-class Pipes-with-Parallel-Pattern-Structure-Support-style-01-control-points-class
+  :inherit-from (object)  
+  :properties(              
+              Pipe-Centerline-start-end-pt-global-coords-list                      (default nil)
+              Pipe-Centerline-pts-after-project                                    (default nil)
+              vector-list-for-dot-product                                          (default nil)
+              pipe-on-rack-or-not-list                                             (default nil)
+              Pipe-Centerline-start-end-pt-local-coords-list-validated-with-od     (default nil)
+              Pipe-Centerline-start-end-pt-local-coords-list-validated             (default nil)               
+              Pipe-validated-od-list                                               (default nil)               
+              Pipe-Centerline-start-end-pt-local-coords-list                       (default nil)
+              Pipe-Centerline-Coords                                               (default nil)
+              pipes-direction                                                      (default nil)
+              rack-up-vector                                                       (default nil)
+              Rack-Plane-point                                                     (default nil) 
+              rack-beam-vector                                                     (default nil)
+              Pipe-location-list                                                   (default nil) 
+              pipe-supports-qty                                                    (default nil) 
+              Pipes-OD-List                                                        (default nil)
+              U-Bolts-Diam                                                         (default nil)
+              U-Bolts-Extensions                                                   (default nil)
+              legs-clr-from-top                                                    (default nil)
+              Rack-elevation                                                       (default nil)
+              Rack-End-0-Extension                                                 (default nil)
+              Rack-End-1-Extension                                                 (default nil)
+              D2                                                                   (default nil) 
+              D2-min                                                               (default nil) 
+              D2-max                                                               (default nil)
+              Lowest-pipe-y-value                                                  (default nil)
+              Lowest-pipe-y-value-list                                             (default nil)               
+               ;;;Rack-Properties
+              Rack-End-0-coords                                                    (default nil)    
+              Rack-End-1-coords                                                    (default nil)
+              Rack-length                                                          (default nil)
+              Rack-web-thk                                                         (default 0.2)
+              Rack-flange-thk                                                      (default 0.2)
+              Rack-web-length                                                      (default 1)
+              Rack-flange-length                                                   (default 2)
+              Rack-Beam-Type-list                                                  (default nil)
+              Rack-Beam-Type                                                       (default nil) 
+               ;;;Leg-Properties
+              leg-flange-thickness                                                 (default nil)
+              leg-web-thickness                                                    (default nil)
+              Rack-leg-at-center?                                                  (default nil)
+              Legs-spacing                                                         (default 10) 
+              Leg-length                                                           (default 15)
+              Leg-web-length                                                       (default 1) 
+              Leg-flange-length                                                    (default 1) 
+              leg-qty                                                              (default nil) 
+              Leg-location-list                                                    (default nil)
+              Leg-Beam-Type-list                                                   (default nil)
+              leg-Beam-Type                                                        (default nil)
+              Pipe-od-clr-to-structure                                             (default 0.0) ;Wear-Pad-thickness             
+              u-bolt-qty                                                           (default nil)  
+              pipe-od-clr-to-u-bolt                                                (default .5)
+              nut-thk                                                              (default 0.5)
+              rack-plane-pt-test                                                   (default nil)               
+              rack-coordinate-system                                               (default nil) 
+              part-coordinate-system                                               (default nil)
+              legs-list                                                            (default nil)
+              Pipe-Centerline-pts-after-project-validated                          (default nil)
+              (ref-pt :class 'point-object
+                coordinates (convert-coords ^^part-coordinate-system (list (nth 0 (the superior superior rack-end-0-coords))  ^^Rack-elevation (/ ^^rack-flange-length 2))
+                              :from :local :to :global)
+                )
+              (u-bolt-thk-ref :class 'point-object
+                coordinates (project-point-to-face (the superior superior pipe-center-pt 
+                                                     ctr-pt-0000 coordinates) 
+                              (the superior superior ref-pt coordinates)                             
+                              ^^pipes-direction
+                              )
+                )
+              )
+  :subobjects (
+               (rack-sta-pt :class 'point-object
+                 coordinates (convert-coords ^^part-coordinate-system (list (nth 0 (the superior superior rack-end-0-coords))  ^^Rack-elevation 0)
+                               :from :local :to :global)
+                 )
+               (rack-end-pt :class 'point-object
+                 coordinates (convert-coords ^^part-coordinate-system (list (nth 0 (the superior superior rack-end-1-coords))  ^^Rack-elevation 0)
+                               :from :local :to :global)
+                 )
+               (rack-sta-bottom-pt :class 'point-object
+                 coordinates (convert-coords ^^part-coordinate-system (list (nth 0 (the superior superior rack-end-0-coords))  (- ^^Rack-elevation ^^rack-web-length) 0)
+                               :from :local :to :global)
+                 )
+               (rack-sta-flange-up-thk-pt :class 'point-object
+                 coordinates (convert-coords ^^part-coordinate-system (list (nth 0 (the superior superior rack-end-0-coords))  ^^Rack-elevation ^^rack-flange-length)
+                               :from :local :to :global)
+                 )
+               (rack-sta-flange-bottom-thk-pt :class 'point-object
+                 coordinates (convert-coords ^^part-coordinate-system (list (nth 0 (the superior superior rack-end-0-coords))  (- ^^Rack-elevation ^^rack-flange-thk) ^^rack-flange-length)
+                               :from :local :to :global)
+                 )
+               (rack-sta-bottom-web-thk-pt :class 'point-object
+                 coordinates (convert-coords ^^part-coordinate-system (list (nth 0 (the superior superior rack-end-0-coords))  (- ^^Rack-elevation ^^rack-web-length) ^^^rack-web-thk)
+                               :from :local :to :global)
+                 )
+               (u-bolt-default-length-pt-0 :class 'point-object
+                 coordinates (point-along-vector 
+                              (the superior superior u-bolt-thk-ref coordinates) 
+                              (loop 
+                                for i in (the superior superior rack-beam-vector) 
+                                do 
+                                collect (* -1 i)) 
+                              (+ 
+                               (the superior superior pipe-od-clr-to-u-bolt) 
+                               (/ 
+                                (first 
+                                 (last 
+                                  (the superior superior pipe-validated-od-list))) 2) 
+                               (the superior superior u-bolts-diam)))
+                 )
+               (u-bolt-default-length-pt-1 :class 'point-object
+                   coordinates   (point-along-vector
+                                  (the superior superior u-bolt-default-length-pt-0 coordinates)
+                                  (loop
+                                    for li in ^^rack-up-vector
+                                    collect
+                                    (* -1 li)
+                                    )
+                                  (+
+                                   (/ (first (last ^^pipe-validated-od-list)) 2)
+                                   ^^pipe-od-clr-to-structure
+                                   (-
+                                    (first (last ^^^lowest-pipe-y-value-list))
+                                    ^^^lowest-pipe-y-value
+                                    )
+                                   )
+                                  )                                
+                   )
+               
+                 (u-bolt-height-pt :class 'point-object
+                   coordinates     (point-along-vector
+                                    (the superior superior u-bolt-thk-ref coordinates)
+                                    ^^rack-beam-vector
+                                    (+ ^^pipe-od-clr-to-u-bolt (/ (first (last ^^Pipe-validated-od-list)) 2) ^^U-Bolts-Diam)
+                                    )
+                   )                         
+                 (u-bolt-thk-pt-0 :class 'point-object
+                   coordinates (point-along-vector
+                                (point-along-vector
+                                 (the superior superior u-bolt-thk-ref coordinates)
+                                 ^^rack-beam-vector
+                                 (+ ^^pipe-od-clr-to-u-bolt (/ (first (last ^^Pipe-validated-od-list)) 2))
+                                 )
+                                (loop
+                                  for li in ^^rack-up-vector
+                                  collect
+                                  (* -1 li)
+                                  )
+                                (+
+                                 (/ (first (last ^^pipe-validated-od-list)) 2)
+                                 ^^rack-flange-thk
+                                 ^^pipe-od-clr-to-structure
+                                 ^^u-bolts-extensions
+                                 ^^nut-thk
+                                 (-
+                                  (first (last ^^^lowest-pipe-y-value-list))
+                                  ^^^lowest-pipe-y-value
+                                  )
+                                 )
+                                )
+                   )                    ;(- (first (last ^^^lowest-pipe-y-value-list)) ^^^lowest-pipe-y-value)
+                 (u-bolt-thk-pt-1 :class 'point-object
+                   coordinates   (point-along-vector
+                                  (point-along-vector
+                                   (the superior superior u-bolt-thk-ref coordinates)
+                                   ^^rack-beam-vector
+                                   (+ ^^pipe-od-clr-to-u-bolt (/ (first (last ^^Pipe-validated-od-list)) 2) ^^U-Bolts-Diam)
+                                   )
+                                  (loop
+                                    for li in ^^rack-up-vector
+                                    collect
+                                    (* -1 li)
+                                    )
+                                  (+
+                                   (/ (first (last ^^pipe-validated-od-list)) 2)
+                                   ^^rack-flange-thk
+                                   ^^pipe-od-clr-to-structure
+                                   ^^u-bolts-extensions
+                                   ^^nut-thk
+                                   (-
+                                    (first (last ^^^lowest-pipe-y-value-list))
+                                    ^^^lowest-pipe-y-value
+                                    )
+                                   )
+                                  )                                
+                   )
+                 (legs-pt :class 'series-object
+                   class-expression 'leg-control-point-class
+                   series-prefix    'leg
+                   quantity         (length ^^legs-list) 
+                   init-form        '(
+                                      top-coordinates   (convert-coords ^^part-coordinate-system (list
+                                                                                                  (+ (nth ^index ^^^leg-location-list) (nth 0 ^^^rack-end-0-coords))
+                                                                                                  (- ^^^Rack-elevation ^^^legs-clr-from-top)
+                                                                                                  0
+                                                                                                  )
+                                                          :from :local :to :global)
+                                      pt-on-beam-fro-clr-coordinates   (point-along-vector (convert-coords ^^part-coordinate-system (list
+                                                                                                                                     (+ (nth ^index ^^^leg-location-list) (nth 0 ^^^rack-end-0-coords))
+                                                                                                                                     (- ^^^Rack-elevation ^^^legs-clr-from-top)
+                                                                                                                                     0
+                                                                                                                                     )
+                                                                                             :from :local :to :global)
+                                                                         ^^rack-up-vector ^^legs-clr-from-top)
+                                  
+                                      bottom-coordinates   (convert-coords ^^part-coordinate-system (list
+                                                                                                     (+ (nth ^index ^^^leg-location-list) (nth 0 ^^^rack-end-0-coords))
+                                                                                                     (- ^^^Rack-elevation ^^^legs-clr-from-top ^^^leg-length)
+                                                                                                     0
+                                                                                                     )
+                                                             :from :local :to :global)
+                                      bottom-flange-length-coordinates   (convert-coords ^^part-coordinate-system (list
+                                                                                                                   (+ (nth ^index ^^^leg-location-list) (nth 0 ^^^rack-end-0-coords) ^^^Leg-flange-length)
+                                                                                                                   (- ^^^Rack-elevation ^^^legs-clr-from-top ^^^leg-length)
+                                                                                                                   0
+                                                                                                                   )
+                                                                           :from :local :to :global)
+                                      bottom-web-length-coordinates      (convert-coords ^^part-coordinate-system (list
+                                                                                                                   (+ (nth ^index ^^^leg-location-list) (nth 0 ^^^rack-end-0-coords))
+                                                                                                                   (- ^^^Rack-elevation ^^^legs-clr-from-top ^^^leg-length)
+                                                                                                                   (- ^^^leg-web-length)
+                                                                                                                   )
+                                                                           :from :local :to :global)
+                                      bottom-web-thk-coordinates      (convert-coords ^^part-coordinate-system (list
+                                                                                                                (+ (nth ^index ^^^leg-location-list) (nth 0 ^^^rack-end-0-coords) ^^^leg-web-thickness)
+                                                                                                                (- ^^^Rack-elevation ^^^legs-clr-from-top ^^^leg-length)
+                                                                                                                (- ^^^leg-web-length)
+                                                                                                                )
+                                                                        :from :local :to :global)
+                                      bottom-flange-thk-coordinates      (convert-coords ^^part-coordinate-system (list
+                                                                                                                   (+ (nth ^index ^^^leg-location-list) (nth 0 ^^^rack-end-0-coords) ^^^Leg-flange-length)
+                                                                                                                   (- ^^^Rack-elevation ^^^legs-clr-from-top ^^^leg-length)
+                                                                                                                   (- ^^^leg-flange-thickness)
+                                                                                                                   )
+                                                                           :from :local :to :global)
+                                      )
+                   )
+                 (pipe-center-pt :class 'series-object
+                   class-expression 'point-object
+                   series-prefix    'ctr-pt
+                   quantity         (length ^^Pipe-Centerline-pts-after-project-validated) 
+                   init-form        '(
+                                      coordinates (nth ^index ^^Pipe-Centerline-pts-after-project-validated)
+                                      )
+                   )
+                 )
+  )
+
+
+  
+               
+  

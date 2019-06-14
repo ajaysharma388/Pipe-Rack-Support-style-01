@@ -1,0 +1,213 @@
+(in-package :aml)
+
+;;;;  (compile-system :Pipe-Rack-Support-style-01 :force? t :forget? t)
+
+(define-class Pipes-with-Parallel-Pattern-Structure-Support-style-01-geometry-and-drawing-class
+  :inherit-from(object)
+  :properties (
+
+               
+              Pipe-Centerline-start-end-pt-global-coords-list (default   (list 
+                                                                          (list (list 406.8152154684632 637.6648915863169 14.74298856141785) 
+                                                                                (list 58.10014689390019 800.9074569360731 14.74298856141785))
+                                                                          (list (list 15.70336190245239 710.3404056651175 14.393923419895476) 
+                                                                                (list 441.15447893396566 511.1757063619288 14.393923419895476))
+                                                                          (list (list 398.75769394251785 420.60865509097306 14.044858278373102) 
+                                                                                (list -288.16352319720494 742.1742878507989 14.044858278373102))
+                                                                          (list (list -330.56030818865275 651.6072365798433 13.695793136850728) 
+                                                                                (list 537.4961150306435 245.24751724252883 13.69579313685073))
+                                                                          (list (list 495.09933003919565 154.68046597157314 13.346727995328356) 
+                                                                                (list -495.9809958731463 618.6308640169901 13.346727995328356))
+                                                                          (list (list -538.3777808645941 528.0638127460345 12.997662853805982) 
+                                                                                (list 633.8377511273205 -20.68067187687068 12.997662853805984))
+                                                                          (list (list 591.4409661358727 -111.2477231478264 12.64859771228361) 
+                                                                                (list -640.105995802844 465.2713422237005 12.64859771228361))
+                                                                          (list (list -682.5027807942919 374.70429095274466 12.299532570761237) 
+                                                                                (list 736.1891504049057 -289.42218696697233 12.299532570761237))
+                                                                          (list (list 693.7923654134579 -379.9892382379281 11.950467429238865) 
+                                                                                (list -724.8995657857398 284.13723968178914 11.950467429238865))
+                                                                          (list (list -767.2963507771876 193.57018841083334 11.60140228771649) 
+                                                                                (list 463.6312431710137 -382.65893474488803 11.60140228771649))
+                                                                          (list (list 421.2344581795658 -473.2259860158437 11.252337146194117) 
+                                                                                (list -750.3617058218334 75.22855639125609 11.252337146194117))
+                                                                          (list (list -792.7584908132812 -15.338494879699576 10.903272004671745) 
+                                                                                (list 197.7024671085447 -478.9989507093108 10.903272004671745))
+                                                                          (list (list 155.30568211709695 -569.5660019802665 10.554206863149371) 
+                                                                                (list -712.1313731116834 -163.49622485875778 10.554206863149371))
+                                                                          (list (list -754.5281581031312 -254.06327612971344 10.205141721626998) 
+                                                                                (list -68.22630895392375 -575.3389666737338 10.205141721626998))
+                                                                          (list (list -110.6230939453716 -665.9060179446896 9.856076580104624) 
+                                                                                (list -535.4548429863701 -467.03126085730605 9.856076580104626))
+                                                                          (list (list -577.8516279778178 -557.5983121282618 9.507011438582252) 
+                                                                                (list -229.75592705320977 -720.5509354216379 9.507011438582252))
+                                                                          )
+                                                                )
+              tank-outer-diameter                             (default 1650)
+              ;;;Smaller test case points
+
+
+             
+              Rack-spacing                 (default 120)          
+              Rack-up-vector               (default '(0 0 1))
+              (rack-at-center? :class 'flag-property-class
+                  formula             (default nil)
+                  label               "Rack At Center"
+                  )
+              central-Rack-Plane-point     (default '(30 0 0))
+              Pipes-od                     (default 5)
+              Pipes-OD-List                (create-pipes-diameter-list (length ^Pipe-Centerline-start-end-pt-global-coords-list) ^Pipes-od)
+              U-Bolts-Diam                 (default 0.2)
+              U-Bolts-Extensions           (default 3)
+
+              ;;;Rack-properties
+              Rack-End-0-Extension                (default 10) 
+              Rack-End-1-Extension                (default 10)
+              Rack-web-thk                       (default 0.2)
+              Rack-flange-thk                    (default 0.2)
+              Rack-web-length                    (default 2)
+              Rack-flange-length                 (default 5)
+              Rack-Beam-Type-list                '(angle channel)
+              (Rack-Beam-Type :class 'option-property-class
+                  Label        "Rack Beam Type"
+                  Formula      (first ^Rack-Beam-Type-list)
+                  Mode         'menu
+                  options-list ^Rack-Beam-Type-list
+                  )
+              ;;;Leg-Properties
+
+              
+              (Rack-leg-at-center? :class 'flag-property-class
+                   formula                    (default nil)
+                   Label                      "Rack leg at center"
+                   )
+              legs-clr-from-top                   (default 0.3)
+              Legs-spacing                        (default 60)
+              Leg-length                          (default 50)
+              Leg-web-length                      (default 2) 
+              Leg-flange-length                   (default 2)
+              Leg-Beam-Type-list                  '(angle channel)
+              (leg-Beam-Type :class 'option-property-class
+                  Label        "Leg Beam Type"
+                  Formula      (first ^Leg-Beam-Type-list)
+                  Mode         'menu
+                  options-list ^leg-Beam-Type-list
+                  )
+
+              ;;;U-bolt-Properties
+              Pipe-od-clr-to-structure            (default 0.0)
+              pipe-od-clr-to-u-bolt               (default .5)
+              nut-thk                             (default 0.5)
+              
+
+              ;;;Computed-Properties
+              
+              (Rack-Beam-vector :class 'computed-data-property-class
+                  formula (cross-product ^Pipes-Direction ^Rack-up-vector)
+                  )
+
+              (Rack-Plane-points-list    :class 'computed-data-property-class
+                                         label "Rack Plane Points List"
+                                         formula    (if (the superior rack-at-center?) 
+                                                      (let* 
+                                                          (
+                                                           (distance-pos    (points-distance (project-point-to-face
+                                                                                              (line-line-intersection ^pipes-highest-coords ^rack-up-vector ^central-rack-plane-point ^pipes-direction)
+                                                                                              (the superior central-rack-plane-point)
+                                                                                              (cross-product ^rack-up-vector ^pipes-direction)
+                                                                                              )
+                                                                              ^central-rack-plane-point
+                                                                              )) 
+                                                           (distance-neg (- 
+                                                                          (the superior distance-along-pipes-direction) distance-pos)
+                                                             ) 
+                                                           (point-list-p nil) 
+                                                           (point-list-n nil) 
+                                                           (temp 
+                                                            (the superior rack-spacing))
+                                                           ) 
+                                                        (loop 
+                                                          while (< temp distance-pos) 
+                                                          do 
+                                                          (setf point-list-p 
+                                                            (append point-list-p 
+                                                              (list 
+                                                               (point-along-vector 
+                                                                (the superior central-rack-plane-point) 
+                                                                (the superior pipes-direction) temp))) temp 
+                                                            (+ temp 
+                                                              (the superior rack-spacing)))) 
+                                                        (setf temp 
+                                                          (the superior rack-spacing)) 
+                                                        (loop 
+                                                          while (< temp distance-neg)                    
+                                                          do 
+                                                          (setf point-list-n 
+                                                            (append point-list-n 
+                                                              (list 
+                                                               (point-along-vector 
+                                                                (the superior central-rack-plane-point) 
+                                                                (the superior pipes-direction) 
+                                                                (- temp)))) temp 
+                                                            (+ temp 
+                                                              (the superior rack-spacing)))) 
+                                                        (sort-points-along-vector 
+                                                         (append point-list-p point-list-n 
+                                                           (list 
+                                                            (the superior central-rack-plane-point))) 
+                                                         (the superior pipes-direction)))
+                                                      (let* 
+                                                          ((distance 
+                                                            (the superior distance-along-pipes-direction)) 
+                                                           (point-list nil)) 
+                                                        (loop 
+                                                          while (<= 0 distance) 
+                                                          do 
+                                                          (setf point-list 
+                                                            (append point-list 
+                                                              (list 
+                                                               (point-along-vector 
+                                                                (the superior pipes-lowest-coords) 
+                                                                (the superior pipes-direction) distance))) distance 
+                                                            (- distance 
+                                                              (the superior rack-spacing))))
+                                                        (rest (reverse (rest point-list)))
+                                                        )
+                                                      )  
+                                         )                                           
+              
+              pipes-direction             (subtract-points (second (first ^Pipe-Centerline-start-end-pt-global-coords-list))
+                                                           (first (first ^Pipe-Centerline-start-end-pt-global-coords-list))
+                                                           )             
+              
+              Pipes-lowest-coords   (first (sort-points-along-vector (loop
+                                                                       for list in ^Pipe-Centerline-start-end-pt-global-coords-list
+                                                                       do
+                                                                       collect (nth 0 list)
+                                                                       )
+                                                                     ^pipes-direction
+                                                                     ))
+              
+              Pipes-highest-coords  (first (last (sort-points-along-vector
+                                                  (loop
+                                                    for list in ^Pipe-Centerline-start-end-pt-global-coords-list
+                                                    do
+                                                    collect (nth 1 list)
+                                                    )
+                                                  ^pipes-direction
+                                                  )
+                                                 )
+                                           )
+              
+              distance-along-pipes-direction (points-distance
+                                              ^Pipes-highest-coords
+                                              ^Pipes-lowest-coords
+                                              )            
+                                        ;pipe-length                 (default 50)             
+               )
+  :subobjects (
+               (geometry :class 'Pipes-with-Parallel-Pattern-Structure-Support-style-01-series-class)
+               (drawings :class 'Pipes-with-Parallel-Pattern-Structure-Support-style-01-drawings-class
+                   geometry-source-object ^^geometry
+                   )
+               )
+  )

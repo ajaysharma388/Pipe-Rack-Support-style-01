@@ -1,0 +1,86 @@
+(in-package :aml)
+
+
+(define-class Pipes-with-Parallel-Pattern-Structure-Support-style-01-plan-view-dimensions-class
+  :inherit-from(object)
+  :properties (
+               geometry-source-object (default nil)
+               viewport-0-object	(default nil);; this is defined in the parent layout class
+               control-point-source-object (the control-points (:from ^geometry-source-object))
+               legs-pt-list (children (the legs-pt (:from ^control-point-source-object)))
+               pipe-ctr-list (children (the pipe-center-pt (:from ^control-point-source-object)))
+               racks-list (children (the rack-series (:from ^^geometry-source-object)))
+               )  
+  :subobjects (
+               (distance-btw-racks :class 'dim-linear-multiple-points-for-drawings-system-class
+                 points-coords-list-in-viewport-object-list   (loop
+                                                                for rack in ^^racks-list
+                                                                do collect (the control-points rack-sta-pt coordinates (:from rack))
+                                                                )
+                 viewport-object-list     (loop 
+                                            for i from 1 to (length 
+                                                             (the superior points-coords-list-in-viewport-object-list)) 
+                                            do 
+                                            collect (the superior superior superior viewports-objects viewport-0)
+                                            )
+                 starting-offset           1
+                 dim-direction-coords     '(1 0 0) ;(the pipes-direction (:from ^^geometry-source-object))
+                 dim-flip-side?            nil
+                 Dim-type                 'incremental    
+                 )
+               (rack-marks-series :class 'series-object
+                 class-expression 'note-label-for-bom-component-mark-class
+                 quantity (length (the racks-list (:from ^geometry-source-object)))
+                 series-prefix    'PR
+                 init-form'(
+                            viewport-object-list (list (the superior superior superior viewports-objects viewport-0))
+                            text-size                3
+                            component-source-object (nth ^index (the racks-list (:from ^^geometry-source-object))) ;(the rack (:from (nth ^index (the racks-list (:from ^^geometry-source-object)))))
+                            target-points-coords-in-viewport-object-list (list
+                                                                          (the control-points rack-end-pt coordinates (:from (nth ^index (the racks-list (:from ^^geometry-source-object)))))
+                                                                          )
+                            origin-position (nth 0 '(upper-right upper-left lower-left lower-right))
+                            origin-position-offset 0.5
+                            viewport-object-list (list ^^viewport-0-object)
+                            circled? t
+                            text-string-list (if ^component-source-object
+                                               (the assembly-sequence standard-mark (:from ^component-source-object))
+                                               "")
+                            )
+                 )
+               (table-for-drawings :class 'general-table-info-for-drawings-system-class
+                 table-title-text                            "Description's Of Drawings"
+                 text-alignment                              ':center
+                 width                                       1.5
+                 attachment-point-coords-in-viewport-object  '(7.506317 4.47522 0)
+                 label-table-list '( "S.No" "Rack Mark" "Corresponding Drawing")
+                 table-data-list   (loop 
+                                     for i from 1 to (length 
+                                                      (the racks-list 
+                                                        (:from 
+                                                         (the superior superior geometry-source-object)))) 
+                                     do 
+                                     collect (list 
+                                              i 
+                                              (the label 
+                                                (:from 
+                                                 (nth 
+                                                  (- i 1) 
+                                                  (the racks-list 
+                                                    (:from 
+                                                     (the superior superior geometry-source-object)))))) 
+                                              (the label 
+                                                (:from 
+                                                 (nth 
+                                                  (- i 1) 
+                                                  (children 
+                                                   (the superior drawings rack-drawings 
+                                                     (:from 
+                                                      (the superior superior geometry-source-object)))))))))
+                 )
+                 
+               )
+  )
+
+
+

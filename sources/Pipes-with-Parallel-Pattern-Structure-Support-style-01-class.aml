@@ -1,0 +1,530 @@
+(in-package :aml)
+
+;;;;  (compile-system :Pipe-Rack-Support-style-01 :force? t :forget? t)
+
+(define-class Pipes-with-Parallel-Pattern-Structure-Support-style-01-class
+  :inherit-from (pipe-support-part-mixin)
+  :properties (
+               label                                              (default nil)
+               (assembly-sequence :class 'components-and-assemblies-manager-class
+                 components-groups-info-list           (list
+                                                        (list "Single Rack"
+                                                          (list
+                                                           (children ^^legs)
+                                                           (children ^^u-bolts)
+                                                           ^^rack
+                                                           )
+                                                          )
+                                                        )
+                 object-for-standard-mark              ^^self
+                 standard-mark                         "PR01"                                                    
+                 )
+               components-assembly-manager-object                  ^assembly-sequence 
+               components-marks-manager-object                     nil
+               Pipe-Centerline-start-end-pt-global-coords-list    (default
+                                                                    (list 
+                                                                     (list (list 406.8152154684632 637.6648915863169 14.74298856141785) 
+                                                                           (list 58.10014689390019 800.9074569360731 14.74298856141785))
+                                                                     (list (list 15.70336190245239 710.3404056651175 14.393923419895476) 
+                                                                           (list 441.15447893396566 511.1757063619288 14.393923419895476))
+                                                                     (list (list 398.75769394251785 420.60865509097306 14.044858278373102) 
+                                                                           (list -288.16352319720494 742.1742878507989 14.044858278373102))
+                                                                     (list (list -330.56030818865275 651.6072365798433 13.695793136850728) 
+                                                                           (list 537.4961150306435 245.24751724252883 13.69579313685073))
+                                                                     (list (list 495.09933003919565 154.68046597157314 13.346727995328356) 
+                                                                           (list -495.9809958731463 618.6308640169901 13.346727995328356))
+                                                                     (list (list -538.3777808645941 528.0638127460345 12.997662853805982) 
+                                                                           (list 633.8377511273205 -20.68067187687068 12.997662853805984))
+                                                                     (list (list 591.4409661358727 -111.2477231478264 12.64859771228361) 
+                                                                           (list -640.105995802844 465.2713422237005 12.64859771228361))
+                                                                     (list (list -682.5027807942919 374.70429095274466 12.299532570761237) 
+                                                                           (list 736.1891504049057 -289.42218696697233 12.299532570761237))
+                                                                     (list (list 693.7923654134579 -379.9892382379281 11.950467429238865) 
+                                                                           (list -724.8995657857398 284.13723968178914 11.950467429238865))   
+                                                                     (list (list -767.2963507771876 193.57018841083334 11.60140228771649) 
+                                                                           (list 463.6312431710137 -382.65893474488803 11.60140228771649))
+                                                                     (list (list 421.2344581795658 -473.2259860158437 11.252337146194117) 
+                                                                           (list -750.3617058218334 75.22855639125609 11.252337146194117))
+                                                                     (list (list -792.7584908132812 -15.338494879699576 10.903272004671745) 
+                                                                           (list 197.7024671085447 -478.9989507093108 10.903272004671745))
+                                                                     (list (list 155.30568211709695 -569.5660019802665 10.554206863149371) 
+                                                                           (list -712.1313731116834 -163.49622485875778 10.554206863149371))
+                                                                     (list (list -754.5281581031312 -254.06327612971344 10.205141721626998) 
+                                                                           (list -68.22630895392375 -575.3389666737338 10.205141721626998))
+                                                                     (list (list -110.6230939453716 -665.9060179446896 9.856076580104624) 
+                                                                           (list -535.4548429863701 -467.03126085730605 9.856076580104626))
+                                                                     (list (list -577.8516279778178 -557.5983121282618 9.507011438582252) 
+                                                                           (list -229.75592705320977 -720.5509354216379 9.507011438582252))
+                                                                     )
+                                                                    )
+               Pipe-Centerline-pts-after-project (loop
+                                                   for  coords in ^Pipe-Centerline-start-end-pt-global-coords-list
+                                                   collect (project-point-to-face (nth 0 coords) !Rack-Plane-point ^Pipes-Direction)  ;;; 2
+                                                   )
+               Pipe-Centerline-pts-after-project-validated   (loop
+                                                               for li in (validate-points-for-support-verification ^pipe-on-rack-or-not-list  ^Pipe-Centerline-pts-after-project ^Pipes-OD-List)
+                                                               do
+                                                               collect (nth 1 li)                 ;;; calculated global sta-pt                                        
+                                                               )
+               vector-list-for-dot-product          (loop
+                                                      for i from 0 to (- (length ^Pipe-Centerline-start-end-pt-global-coords-list) 1) 
+                                                      do
+                                                      collect (list (subtract-points                                                 ;;; 3
+                                                                     (nth 0 (nth i ^Pipe-Centerline-start-end-pt-global-coords-list)) 
+                                                                     (nth i ^Pipe-Centerline-pts-after-project)
+                                                                     )
+                                                                    (subtract-points
+                                                                     (nth 1 (nth i ^Pipe-Centerline-start-end-pt-global-coords-list))
+                                                                     (nth i ^Pipe-Centerline-pts-after-project)
+                                                                     )
+                                                                    )
+                                                      )
+               pipe-on-rack-or-not-list                (loop
+                                                         for vector in ^vector-list-for-dot-product
+                                                         collect (if (> 0 (dot-product (nth 0 vector) (nth 1 vector))) ;;; 4
+                                                                     t
+                                                                   )
+                                                         )
+
+
+               Pipe-Centerline-start-end-pt-local-coords-list-validated-with-od     (validate-points-for-support-verification ^pipe-on-rack-or-not-list  ^Pipe-Centerline-start-end-pt-global-coords-list ^Pipes-OD-List)
+               
+               
+               Pipe-Centerline-start-end-pt-local-coords-list-validated             (loop
+                                                                                      for li in ^Pipe-Centerline-start-end-pt-local-coords-list-validated-with-od
+                                                                                      do
+                                                                                      collect (nth 1 li)                 ;;; calculated global sta-pt                                        
+                                                                                      )
+               
+               Pipe-validated-od-list                                               (loop
+                                                                                      for li in ^Pipe-Centerline-start-end-pt-local-coords-list-validated-with-od
+                                                                                      do
+                                                                                      collect (nth 0 li)         ;;; validated od list     
+                                                                                      )
+               
+               Pipe-Centerline-start-end-pt-local-coords-list     (loop
+                                                                    for coords in ^Pipe-Centerline-start-end-pt-local-coords-list-validated 
+                                                                    do
+                                                                    collect (list (convert-coords
+                                                                                   ^part-coordinate-system
+                                                                                   (nth 0 coords) 
+                                                                                   :from :global :to :local)
+                                                                                  (convert-coords
+                                                                                   ^part-coordinate-system
+                                                                                   (nth 1 coords) 
+                                                                                   :from :local :to :global)
+                                                                                  )
+                                                                    )
+               
+               
+               
+               ;;Single-Rack-Inputs
+               
+               (Pipe-Centerline-Coords :class 'computed-data-property-class
+                   formula           (loop
+                                       for coords-list in ^Pipe-Centerline-start-end-pt-local-coords-list
+                                       do
+                                       collect (nth 0 coords-list)
+                                       )
+                   )
+               pipes-direction             (subtract-points (second (first ^Pipe-Centerline-start-end-pt-global-coords-list))
+                                                            (first (first ^Pipe-Centerline-start-end-pt-global-coords-list))
+                                                            )      
+                                        ;pipes-direction           (default '(1 0 0)) ;;;pipe direction vector
+
+               rack-up-vector      (default '(0 0 1))
+
+               Rack-Plane-point     (default '(0 0 0)) 
+               rack-beam-vector     (default (cross-product ^Pipes-Direction ^Rack-up-vector))
+               (Pipe-location-list :class 'computed-data-property-class
+                   formula          (sort-points-along-vector ^Pipe-Centerline-Coords '(1 0 0) )
+                   )
+                                        ;^Rack-Beam-vector
+               (pipe-supports-qty :class 'computed-data-property-class
+                   formula            (length ^Pipe-location-list)
+                   )
+               (Pipes-OD-List :class 'computed-data-property-class
+                   formula   (default (create-pipes-diameter-list (length ^Pipe-Centerline-start-end-pt-global-coords-list) 10))
+                   )
+               U-Bolts-Diam                 (default 0.5)
+               U-Bolts-Extensions           (default 3)
+               
+               legs-clr-from-top                   (default 0.3)
+               (Rack-elevation :class 'computed-data-property-class ;D1 
+                   formula  (- ^lowest-pipe-y-value ^pipe-od-clr-to-structure)
+                   )                    
+               Rack-End-0-Extension                (default 10) ;D3
+               Rack-End-1-Extension                (default 10) ;D4
+               (D2 :class 'computed-data-property-class
+                   formula (- ^D2-max ^D2-min)
+                   )
+               (D2-min :class 'computed-data-property-class
+                   formula      (- (nth 0 (nth 0 ^Pipe-location-list)) (/ (nth 0 ^Pipe-validated-OD-List) 2))
+                   )
+               (D2-max :class 'computed-data-property-class
+                   formula        (+ (nth 0 (nth (- (length ^Pipe-location-list) 1) ^Pipe-location-list)) (/ (nth (- (length ^Pipe-validated-OD-List) 1) ^Pipe-validated-OD-List) 2))
+                   )
+               (Lowest-pipe-y-value :class 'computed-data-property-class
+                   formula         (apply 'min (loop
+                                                 for item from 0 to (- (length ^Pipe-location-list) 1)
+                                                 do
+                                                 collect (- (nth  1 (nth item  ^Pipe-location-list)) (/ (nth item ^Pipe-validated-od-list) 2))
+                                                 )
+                                          )
+                   )
+               Lowest-pipe-y-value-list (loop
+                                          for item from 0 to (- (length ^Pipe-location-list) 1)
+                                          do
+                                          collect (- (nth  1 (nth item  ^Pipe-location-list)) (/ (nth item ^Pipe-validated-od-list) 2))
+                                          )
+             
+               
+               ;;;Rack-Properties
+               
+               (Rack-End-0-coords :class 'computed-data-property-class
+                   formula          (list (- ^D2-min ^Rack-End-0-Extension) 0 0)  ;;;Rack along x-axis
+                   )
+               (Rack-End-1-coords :class 'computed-data-property-class
+                   formula         (list (+ ^D2-max ^Rack-End-1-Extension) 0 0)
+                   )
+               (Rack-length  :class 'computed-data-property-class
+                             formula  (+ ^D2 ^Rack-End-0-Extension ^Rack-End-1-Extension) ;(- (nth 0 ^Rack-End-1-coords) (nth 0 ^Rack-End-0-coords));(defualt 30)
+                             )
+               Rack-web-thk                       (default 0.2)
+               Rack-flange-thk                    (default 0.2)
+               Rack-web-length                    (default 1)
+               Rack-flange-length                 (default 2)
+               Rack-Beam-Type-list                '(angle channel)
+               (Rack-Beam-Type :class 'option-property-class
+                   Label        "Rack Beam Type"
+                   Formula      (default (first ^Rack-Beam-Type-list))
+                   Mode         'menu
+                   options-list ^Rack-Beam-Type-list
+                   )
+               ;;;Leg-Properties
+               (Rack-leg-at-center? :class 'flag-property-class
+                   formula                    (default nil)
+                   Label                      "Rack leg at center"
+                   )
+               Legs-spacing                        (default 10) ;(/ (- ^rack-length ^leg-start-distance ^Leg-flange-length) (- ^Leg-Qty 1))
+               Leg-length                          (default 15)
+               Leg-web-length                      (default 1) 
+               Leg-flange-length                   (default 1) 
+               (leg-qty    :class 'computed-data-property-class
+                           formula       (length ^Leg-location-list)
+                           )
+               Leg-location-list                   (calculate-legs-location-list ^rack-length ^Rack-leg-at-center? ^legs-spacing)
+               Leg-Beam-Type-list                  '(angle channel)
+               (leg-Beam-Type :class 'option-property-class
+                   Label        "Leg Beam Type"
+                   Formula      (default (first ^Leg-Beam-Type-list))
+                   Mode         'menu
+                   options-list ^leg-Beam-Type-list
+                   )
+               leg-flange-thickness                         (default .2)
+               leg-web-thickness                            (default .2)
+               Pipe-od-clr-to-structure            (default 0.0) ;Wear-Pad-thickness             
+               (u-bolt-qty       :class'computed-data-property-class
+                                 formula ^pipe-supports-qty
+                                 )
+               pipe-od-clr-to-u-bolt               (default .5)
+              
+              
+               nut-thk                             (default 0.5)
+               
+
+
+               ;;;------------hidden-objects
+
+                
+               (rack-plane-pt-test :class 'point-object
+                   coordinates ^^rack-plane-point
+                   )
+               
+               
+               (rack-coordinate-system :class 'coordinate-system-class
+                   origin ^^Rack-plane-point
+                   vector-i ^^Rack-beam-vector
+                   vector-j ^^Rack-up-vector
+                   )
+               (part-coordinate-system :class 'coordinate-system-class
+                   reference-coordinate-system ^^rack-coordinate-system
+                   )
+
+
+               (control-points :class 'Pipes-with-Parallel-Pattern-Structure-Support-style-01-control-points-class
+                 legs-list     (children ^^legs)
+                 Pipe-Centerline-pts-after-project-validated ^^Pipe-Centerline-pts-after-project-validated
+                 )
+
+               )  
+  :subobjects (              
+                              
+               (Rack :class (case (the Rack-Beam-Type)       ;;;Depends on UI Property Rack-Beam-Type
+                              (angle 'Pipes-with-Parallel-Pattern-Structure-Support-style-01-L-shape-class)
+                              (channel 'Pipes-with-Parallel-Pattern-Structure-Support-style-01-channel-class)
+                              (t 'Pipes-with-Parallel-Pattern-Structure-Support-style-01-L-shape-class)
+                              )
+                   reference-coordinate-system ^^part-coordinate-system
+                   height              ^^Rack-web-length  
+                   width               ^^Rack-flange-length
+                   length              ^^Rack-length
+                   thickness           ^^Rack-web-thk
+                   material            'carbon-steel
+                   density             0.284
+                   angle-size          (format nil "L ~a X ~a X ~a." !height !width !thickness)
+                   angle-length        ^length
+                   channel-size        ^height
+                   channel-length      ^length
+                   color               'burlywood4
+                   orientation         (case (the Rack-Beam-Type)
+                                         (angle (list
+                                                 (rotate 90 '(0 0 1))
+                                                 (rotate 90 '(0 1 0))
+                                                 (rotate 90 '(1 0 0))
+                                                 (translate ^^Rack-End-0-coords)
+                                                 (translate (list 0  (- ^^lowest-pipe-y-value ^^Pipe-od-clr-to-structure)   0))
+                                                 )
+                                                )                                         
+                                         (channel (list
+                                                   (rotate 90 '(0 0 1))
+                                                   (rotate 90 '(0 1 0))
+                                                   (rotate 180 '(1 0 0))
+                                                   (translate ^^Rack-End-0-coords)
+                                                   (translate (list 0  (- ^^lowest-pipe-y-value ^^Pipe-od-clr-to-structure)   0))
+                                                   )
+                                                  )
+                                         )                               
+                   )
+               
+               (Legs :class 'series-object
+                   class-expression     (case ^^leg-beam-type
+                                          (angle 'Pipes-with-Parallel-Pattern-Structure-Support-style-01-L-shape-class)
+                                          (channel 'Pipes-with-Parallel-Pattern-Structure-Support-style-01-channel-class)
+                                          (t 'Pipes-with-Parallel-Pattern-Structure-Support-style-01-L-shape-class)
+                                          )
+                   quantity             ^^Leg-Qty
+                   height               ^^Leg-web-length
+                   width                ^^Leg-flange-length
+                   length               ^^Leg-length
+                   thickness        ^^leg-web-thickness
+                   init-form '(
+                               reference-coordinate-system ^^part-coordinate-system
+                               color       'green
+                               ;-----
+                               material            'carbon-steel
+                               density             0.284
+                               angle-size          (format nil "L ~a X ~a X ~a." ^height ^width ^thickness)
+                               angle-length        ^length
+                               channel-size        (format nil "C ~a X ~a X ~a." ^height ^width ^thickness)
+                               channel-length      ^length
+                               ;------
+                               orientation (case ^^^leg-beam-type
+                                             (angle   (list
+                                                       (rotate 90 '(-1 0 0)) 
+                                                       (rotate 270 '(0 -1 0))
+                                                       (rotate 90 '(0 -1 0)) 
+                                                       (translate  (list (+ (nth ^index ^Leg-location-list) (nth 0 ^^^rack-end-0-coords))
+                                                                     (- (+ ^^^legs-clr-from-top ^^^Leg-length))
+                                                                     0))
+                                                       (translate (list 0 ^^^Rack-elevation 0))
+                                                       )
+                                               )
+                                             
+                                             (channel  (list
+                                                        (rotate 90 '(-1 0 0)) 
+                                                        (rotate 270 '(0 -1 0))
+                                                        (translate (list (+ (nth ^index ^Leg-location-list) (nth 0 ^^^rack-end-0-coords));; ^^^leg-start-distance (* ^index ^^^legs-spacing)
+                                                                     (- (+ ^^^legs-clr-from-top ^^^Leg-length))
+                                                                     0))
+                                                        (translate (list 0 ^^^Rack-elevation 0))
+                                                        )
+                                               )
+                                             
+;;;                                              (t (list
+;;;                                                  (rotate 90 '(-1 0 0)) 
+;;;                                                  (rotate 270 '(0 -1 0))
+;;;                                                  (rotate 90 '(0 -1 0))
+;;;                                                  (translate (list (+ ^^^leg-start-distance (* ^index ^^^legs-spacing)) (- (+ ^^^legs-clr-from-top ^^^Leg-length)) 0))
+;;;                                                  (translate (list 0 ^^^Rack-elevation 0))
+;;;                                                  )
+                                             )
+                               )                              
+                               
+                   )
+               
+               (U-bolts :class 'series-object
+                   class-expression        'Pipes-with-Parallel-Pattern-Structure-Support-style-01-u-bolt-class
+                   quantity                ^^u-bolt-qty      
+                   init-form '(
+                               material            'carbon-steel
+                               density             0.284
+                               u-bolt-length       (+ (* 2 (+ ^u-bolt-fixed-length ^u-bolt-clr))
+                                                     (* (+ (/ ^pipe-diameter 2) ^^^pipe-od-clr-to-u-bolt ) pi)
+                                                     )
+                               u-bolt-pipe-diameter ^pipe-diameter
+                               reference-coordinate-system ^^part-coordinate-system
+                               u-bolt-fixed-length (- (nth ^index ^^^lowest-pipe-y-value-list) ^^^lowest-pipe-y-value)
+                               pipe-diameter    (nth ^index ^^^Pipe-validated-od-list)
+                               u-bolt-diameter  ^^^U-Bolts-Diam
+                               U-bolt-clr       ^^^U-Bolts-Extensions    
+                               nut-fixed-y-offset (+ (/ (nth ^index ^^^Pipe-validated-od-list) 2) (- (nth ^index ^^^lowest-pipe-y-value-list) ^^^lowest-pipe-y-value)) 
+                               rack-flange-thk  ^^^rack-flange-thk
+                               orientation      (list
+                                                 (translate (list
+                                                             (nth 0 (nth ^index ^^^pipe-location-list))                                                          
+                                                             (nth 1 (nth ^index ^^^pipe-location-list)) ;(+ (/ ^pipe-diameter 2) ^^^pipe-od-clr-to-structure)  
+                                                             (case ^^^Rack-Beam-Type
+                                                               (angle (/ ^^^Rack-flange-length 2))
+                                                               (channel  (/ ^^^Rack-web-length 2))
+                                                               )                                                          
+                                                             )
+                                                            )
+                                                 )            
+                               )   
+                   )
+              
+               )
+  )
+  
+(defun calculate-legs-location-list (rack-length is-leg-at-center? leg-spacing)
+  (let*
+      (
+       (list '())
+       temp
+       temp-1
+       )
+    (if is-leg-at-center?
+      (progn
+        (setf temp (/ rack-length 2))
+        (loop
+          while (> rack-length temp)
+          do
+          (setf list (append list (list temp))
+            temp (+ temp leg-spacing)
+            )
+          )
+        (setf temp  (/ rack-length 2))
+         (loop
+          while (< 0 temp)
+          do
+          (setf list (append list (list temp))
+            temp (- temp leg-spacing)
+            )
+          )
+         )
+       (progn
+        (setf temp (+ (/ leg-spacing 2) (/ rack-length 2))
+          temp-1 (- (/ rack-length 2) (/ leg-spacing 2))
+          )
+        (loop
+          while (> rack-length temp)
+          do
+          (setf list (append list (list temp))
+            temp (+ temp leg-spacing)
+            )
+          )
+         (loop
+          while (< 0 temp-1)
+          do
+          (setf list (append list (list temp-1))
+            temp-1 (- temp-1 leg-spacing)
+            )
+          )
+         )
+      )
+    (if (equal nil (sort (remove-duplicates list) 'sort-data-list))
+      (list (/ rack-length 2))
+      (sort (remove-duplicates list) 'sort-data-list)
+      )    
+    )
+  )
+
+
+
+(defun sort-data-list (object-1 object-2)
+  (if (< object-1 object-2)
+    t
+    nil
+    )
+  )
+
+(define-method property-classification-list Pipes-with-Parallel-Pattern-Structure-Support-style-01-class()
+  '(
+    ("main-properties"
+     (
+      "Main Properties"   
+      U-Bolts-Diam    
+      U-Bolts-Extensions
+      Rack-End-0-Extension      
+      Rack-End-1-Extension
+      Centerline-Coordinates 
+      Pipe-Centerline-Coords
+      Pipes-Direction
+      Rack-up-vector  
+      Rack-Plane-point
+      Rack-Beam-vector 
+      Pipe-location-list
+      pipe-supports-qty 
+      Pipes-OD-List 
+      Rack-elevation 
+      D2  
+      D2-min
+      D2-max 
+      Lowest-pipe-y-value 
+      "Rack Properties"
+      (Rack-web-thk (label "Rack Thickness"))                                         
+      Rack-web-length                    
+      Rack-flange-length                 
+     
+      Rack-End-0-coords
+      Rack-End-1-coords 
+      Rack-length  
+      Rack-Beam-Type
+      Rack-leg-at-center?
+      "Leg Properties"
+      (leg-web-thickness (label "Leg Thickness"))                          
+      Legs-clr-from-top                   
+      Legs-spacing                        
+      Leg-length                          
+      Leg-web-length                      
+      Leg-flange-length                   
+      Leg-Qty                             
+      Leg-start-distance               
+      leg-Beam-Type 
+      "U-bolt Properties"
+      pipe-od-clr-to-u-bolt               
+      Pipe-od-clr-to-structure            
+      u-bolt-qty
+      nut-thk                         
+      )
+     )
+    )
+  )
+
+
+(defun validate-points-for-support-verification (true-or-nil-list sta-end-point-list Pipes-OD-List)   
+  (let* (
+         (list '())
+         )
+    (loop
+      for i from 0 to (- (length  true-or-nil-list) 1)
+      do
+      (if (nth i true-or-nil-list)
+          (setf list (append list (list
+                                   (list 
+                                    (nth i Pipes-OD-List)
+                                    (nth i sta-end-point-list)
+                                    )		
+                                   )
+                             )
+                )
+        )
+      )
+    list
+    )
+  )
+
+
+
+ 

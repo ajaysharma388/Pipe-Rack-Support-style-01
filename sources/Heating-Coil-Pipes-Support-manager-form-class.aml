@@ -1,0 +1,210 @@
+(in-package :aml)
+
+
+
+(define-class Heating-Coil-Pipes-Support-manager-form-class
+  :inherit-from(
+                ui-grid-form-mixin ;;; Model Interface Widgets are "Grid Based" rather than "Pixel Dimension Based", but they can be forced to use pixels.
+                ui-form-class
+                )
+  :properties (
+               selected-Heating-Coil-object   nil ;;; selected-tank-shell-welds-and-x-ray-maps-manager-object
+               x-offset               200
+               y-offset               200
+               height                 450
+               width                  520
+               label                  "Heating Coil Support"
+               measurement            'pixels;; This is the default formula anyway.
+               resize?                nil ;;; Allow form to be resized by a user.
+               shrink?                nil ;;; Minimize Button Exists?
+               ;; Define Grid Unit.
+               unit-height            25
+               unit-width             ^width
+               close-action           '(hide (the superior))
+               )
+  :subobjects(
+              (Source :class 'ui-property-field-class
+                coordinates            '(0 0) ;;; Y coord then X coord in grid units.
+                size                   '(1 1)
+                model-property-object (when ^^selected-heating-coil-object
+                                        (the Source-Heating-Coil-Object self (:from ^^selected-heating-coil-object))
+                                        )
+                label                 "Heating Coil Object"
+                automatic-apply?      t
+                )
+              (point-list :class 'ui-property-field-class
+                coordinates            '(1 0) ;;; Y coord then X coord in grid units.
+                size                   '(1 1)
+                model-property-object (when ^^selected-heating-coil-object
+                                        (the Pipe-Centerline-start-end-pt-global-coords-list self (:from ^^selected-heating-coil-object))
+                                        )
+                label                 "Pipes Start & End Point List"
+                automatic-apply?      t
+                ) 
+              (rack-spacing :class 'ui-property-field-class
+                coordinates            '(2 0) ;;; Y coord then X coord in grid units.
+                size                   '(1 1)
+                model-property-object (when ^^selected-heating-coil-object
+                                        (the Support-Racks-Spacing  self (:from ^^selected-heating-coil-object))
+                                        )
+                label                 "Support Rack Spacing"
+                automatic-apply?      t
+                )   
+              (Rack-at-center? :class 'ui-property-field-class
+                coordinates            '(3 0) ;;; Y coord then X coord in grid units.
+                size                   '(1 1)
+                model-property-object (when ^^selected-heating-coil-object
+                                        (the Support-Rack-at-Center self (:from ^^selected-heating-coil-object))
+                                        )
+                label                 "Support Rack at Center"
+                automatic-apply?      t
+                )
+              (Support-Beam-End-Extension :class 'ui-property-field-class
+                coordinates            '(4 0) ;;; Y coord then X coord in grid units.
+                size                   '(1 1)
+                model-property-object (when ^^selected-heating-coil-object
+                                        (the Support-Beam-End-Extension   self (:from ^^selected-heating-coil-object))
+                                        )
+                label                 "Support Beam End Extension"
+                automatic-apply?      t
+                )
+              (Support-Legs-Spacing :class 'ui-property-field-class
+                coordinates            '(5 0) ;;; Y coord then X coord in grid units.
+                size                   '(1 1)
+                model-property-object (when ^^selected-heating-coil-object
+                                        (the Support-Legs-Spacing   self (:from ^^selected-heating-coil-object))
+                                        )
+                label                 "Support Legs Spacing"
+                automatic-apply?      t
+                )  
+              (leg-at-center? :class 'ui-property-field-class
+                coordinates            '(6 0) ;;; Y coord then X coord in grid units.
+                size                   '(1 1)
+                model-property-object (when ^^selected-heating-coil-object
+                                        (the  Support-Leg-at-Center  self (:from ^^selected-heating-coil-object))
+                                        )
+                label                 "Support Leg at Center"
+                automatic-apply?      t
+                )	
+              (beam-type :class 'ui-property-field-class
+                coordinates            '(7 0) ;;; Y coord then X coord in grid units.
+                size                   '(1 1)
+                model-property-object (when ^^selected-heating-coil-object
+                                        (the Support-Beam-Type  self (:from ^^selected-heating-coil-object))
+                                        )
+                label                 "Support Beam Type"
+                automatic-apply?      t
+                )	
+              (Support-Beam-Standard :class 'ui-property-field-class
+                coordinates            '(8 0) ;;; Y coord then X coord in grid units.
+                size                   '(1 1)
+                model-property-object (when ^^selected-heating-coil-object
+                                        (the Support-Beam-Standard  self (:from ^^selected-heating-coil-object))
+                                        )
+                label                 "Support Beam Standard"
+                automatic-apply?      t
+                )
+              (Support-Beam-size :class 'ui-property-field-class
+                coordinates            '(9 0) ;;; Y coord then X coord in grid units.
+                size                   '(1 1)
+                model-property-object (when ^^selected-heating-coil-object
+                                        (the Support-Beam-Size self (:from ^^selected-heating-coil-object))
+                                        )
+                label                 "Support Beam Size"
+                automatic-apply?      t
+                )
+              (Support-U-bolt-thickness :class 'ui-property-field-class
+                coordinates            '(10 0) ;;; Y coord then X coord in grid units.
+                size                   '(1 1)
+                model-property-object (when ^^selected-heating-coil-object
+                                        (the Support-U-bolt-thickness self (:from ^^selected-heating-coil-object))
+                                        )
+                label                 "Support U Bolt Thickness"
+                automatic-apply?      t
+                )
+              (pipes-od-value :class 'ui-property-field-class
+                coordinates            '(11 0) ;;; Y coord then X coord in grid units.
+                size                   '(1 1)
+                model-property-object (when ^^selected-heating-coil-object
+                                        (the pipes-od-value self (:from ^^selected-heating-coil-object))
+                                        )
+                label                 "Pipe Nominal Diameter"
+                automatic-apply?      t
+                )
+              (pipes-od :class 'ui-property-field-class
+                coordinates            '(12 0) ;;; Y coord then X coord in grid units.
+                size                   '(1 1)
+                model-property-object (when ^^selected-heating-coil-object
+                                        (the pipes-od self (:from ^^selected-heating-coil-object))
+                                        )
+                label                 "Pipe Outer Diameter"
+                automatic-apply?      t
+                )
+
+
+              (Geometry :class 'ui-grid-action-button-class
+                coordinates (list 14 0) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Rack support System Geometry"
+                button1-action '(
+                                 (draw (the geometry (:from ^^selected-Heating-Coil-object)))
+                                 )
+                button3-action  '(
+                                  (undraw (the geometry (:from ^^selected-Heating-Coil-object)))
+                                  )
+                )
+              (ga-drawings :class 'ui-grid-action-button-class
+                coordinates (list 14 (/ 1 3)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "General Arrangement Drawings"
+                button1-action '(
+                                 (draw (the drawings plan-view-drawing (:from ^^selected-Heating-Coil-object)))
+                                 )
+                button3-action  '(
+                                  (undraw (the drawings plan-view-drawing (:from ^^selected-Heating-Coil-object)))
+                                  )
+                )
+              (rack-view-drawings :class 'ui-grid-action-button-class
+                coordinates (list 14 (/ 2 3)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Rack support System Drawings"
+                button1-action '(
+                                 (draw (the drawings rack-drawings (:from ^^selected-Heating-Coil-object)))
+                                 )
+                button3-action  '(
+                                  (undraw (the  drawings rack-drawings (:from ^^selected-Heating-Coil-object)))
+                                  )
+                )
+              (refresh :class 'ui-grid-action-button-class
+                coordinates (list 15 (/ 0 2)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 2))
+                label "Refresh"
+                button1-action '(
+                                 (regen)
+                                 )
+                )
+              (fit :class 'ui-grid-action-button-class
+                coordinates (list 15 (/ 1 2)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 2))
+                label "Fit Display"
+                button1-action '(zoom 'all)
+                )
+              (close :class 'ui-grid-action-button-class
+                coordinates (list 17 (/ 2 3)) ;;; Y coord then X coord in grid units.
+                size (list 1 (/ 1 3))
+                label "Close"
+                button1-action '(hide (the superior superior))
+                )
+              )
+  )
+
+
+(define-method display  Heating-Coil-Pipes-Support-manager-form-class()
+  (call-next-method)
+  (set-topmost-form (the) t)
+  )
+
+(define-method hide Heating-Coil-Pipes-Support-manager-form-class()
+  (set-topmost-form (the) nil)
+  (call-next-method)
+  )

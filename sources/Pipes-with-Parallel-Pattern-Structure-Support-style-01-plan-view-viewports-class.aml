@@ -1,0 +1,68 @@
+(in-package :aml)
+
+
+(define-class Pipes-with-Parallel-Pattern-Structure-Support-style-01-plan-view-viewports-class
+  :inherit-from (object)
+  :properties (
+               geometry-source-object (default nil)
+               viewport-0-camera-target-coords (let* (
+                                                      (min-max-list
+                                                       (get-objects-minmax-box-points-by-vectors
+                                                        ^viewport-0-objects-to-fit-within-limits-list
+                                                        (cross-product ^viewport-0-up-vector ^viewport-0-eye-vector)
+                                                        ^viewport-0-up-vector
+                                                        )
+                                                       )
+                                                      )
+                                                 (mid-point (nth 0 min-max-list) (nth 1 min-max-list))
+                                                 )
+               viewport-0-eye-vector (the rack-up-vector (:from ^geometry-source-object)) 
+               viewport-0-up-vector  (cross-product ^viewport-0-eye-vector (cross-product (the rack-beam-vector (:from ^geometry-source-object)) ^viewport-0-eye-vector))
+               viewports-percent-size-list (default nil)
+               viewport-0-objects-to-fit-within-limits-list (default nil)
+               viewport-0-objects-to-include-list (default nil)
+               viewport-0-objects-to-display (remove-duplicates (append ^viewport-0-objects-to-fit-within-limits-list ^viewport-0-objects-to-include-list))
+               viewport-0-objects-max-dim-list (let* (
+                                                      (min-max-list (minmax-box-list ^viewport-0-objects-to-fit-within-limits-list))
+                                                      (min-values (nth 0 min-max-list));; (minX minY minZ)
+                                                      (max-values (nth 1 min-max-list));; (maxX maxY maxZ)
+                                                      )
+                                                 (list
+                                                  (- (nth 0 max-values) (nth 0 min-values))
+                                                  (- (nth 1 max-values) (nth 1 min-values))
+                                                  )
+                                                 );; only calculating x and y
+               paper-width (default nil);; take value from parent drawing-layout-class
+               paper-height (default nil);; take value from parent drawing-layout-class              
+               viewports-x-y-dim-on-paper-list (list
+                                                (* (nth 0 ^viewports-percent-size-list) ^paper-width  0.01)
+                                                (* (nth 1 ^viewports-percent-size-list) ^paper-height  0.01)
+                                                )               
+               viewport-0-scale-factor-list  (list
+                                              1
+                                              (+ 4 (compute-viewport-scale
+                                               (nth 0 (the superior viewports-percent-size-list))
+                                               (nth 1 (the superior viewports-percent-size-list))
+                                               (the superior paper-width) 
+                                               (the superior paper-height)
+                                               (nth 0 
+                                                 (the superior viewport-0-objects-max-dim-list)) 
+                                               (nth 1 
+                                                 (the superior viewport-0-objects-max-dim-list)) :offsets-percentage 1)))             
+               )  
+  :subobjects(
+              (viewport-0 :class 'drawing-viewport-class
+                up-vector  ^^viewport-0-up-vector    ;(the rack-beam-vector (:from ^^geometry-source-object)) ;	(convert-vector (the part-coordinate-system (:from ^^geometry-source-object)) '(0 0 1) :from :local :to :global)
+                eye-vector ^^viewport-0-eye-vector  ;(the rack-up-vector (:from ^^geometry-source-object)) ;	(convert-vector (the part-coordinate-system (:from ^^geometry-source-object))'(0 -1 0)  :from :local :to :global)
+                object-list	^^viewport-0-objects-to-display
+                size-list 	^^viewports-percent-size-list;; percentage
+                position-list	'(10  15);; percentage lower left corner
+                camera-target-coords ^^viewport-0-camera-target-coords;; the x,y,z location on the geometry to set focus
+                scale-factor-set? t
+                scale-factor-list ^^viewport-0-scale-factor-list               
+                render 'hidden-line
+                show-silhoutes? t
+                hidden-line-type 'hidden
+                )
+              )
+  )

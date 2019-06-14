@@ -1,0 +1,113 @@
+(in-package :aml)
+
+(define-class Pipes-with-Parallel-Pattern-Structure-Support-style-01-L-shape-class
+  :inherit-from (extrusion-object angle-component-mixin)
+  :properties (
+               list-0                                   (default nil)
+               width                                    (default 1)
+               height                                   (default 1)
+               length                                   (default 10)
+               flange-thickness                         ^thickness
+               web-thickness                            ^thickness
+               thickness                                (default .2)
+               part-reference-coordinate-system-object  nil
+               swept-object                             ^bounded-profile
+               vector                                   (default '(0 0 1))
+               distance                                 ^length
+;;;               ) 
+;;;   :subobjects (
+               (L-shape-coordinate-system :class 'coordinate-system-class
+                 reference-coordinate-system ^^part-reference-coordinate-system-object
+                 )
+               (point-00 :class 'point-object
+                 coordinates (list
+                              0
+                              0
+                              0
+                              )
+                 )
+               (point-01 :class 'point-object
+                 coordinates (list
+                              0
+                              ^^height
+                              0
+                              )
+                 )               
+               (point-02 :class 'point-object
+                 coordinates (list
+                              ^^web-thickness
+                              ^^height
+                              0
+                              )
+                 )
+               (point-03 :class 'point-object
+                 coordinates (list
+                              ^^web-thickness
+                              ^^flange-thickness
+                              0
+                              )
+                 )
+               (point-04 :class 'point-object
+                 coordinates (list
+                              ^^width
+                              0
+                              0
+                              )
+                 )
+               (point-05 :class 'point-object
+                 coordinates (list
+                              ^^width
+                              ^^flange-thickness
+                              0
+                              )
+                 )
+               ;;Line-objects               
+               (line-00 :class 'line-object
+                 point1 (the superior superior point-00 coordinates)
+                 point2 (the superior superior point-01 coordinates)
+                 reference-coordinate-system ^^L-shape-coordinate-system
+                 )
+               (line-01 :class 'line-object
+                 point1 (the superior superior point-01 coordinates)
+                 point2 (the superior superior point-02 coordinates)
+                 reference-coordinate-system ^^L-shape-coordinate-system
+                 )
+               (line-02 :class 'line-object
+                 point1 (the superior superior point-02 coordinates)
+                 point2 (the superior superior point-03 coordinates)
+                 reference-coordinate-system ^^L-shape-coordinate-system
+                 )
+               (line-03 :class 'line-object
+                 point1 (the superior superior point-00 coordinates)
+                 point2 (the superior superior point-04 coordinates)
+                 reference-coordinate-system ^^L-shape-coordinate-system
+                 )
+               (line-04 :class 'line-object
+                 point1 (the superior superior point-03 coordinates)
+                 point2 (the superior superior point-05 coordinates)
+                 reference-coordinate-system ^^L-shape-coordinate-system
+                 )
+               (line-05 :class 'line-object
+                 point1 (the superior superior point-04 coordinates)
+                 point2 (the superior superior point-05 coordinates)
+                 reference-coordinate-system ^^L-shape-coordinate-system
+                 )
+               (profile :class 'sewn-object
+                 object-list (list
+                              ^^line-00
+                              ^^line-01
+                              ^^line-02
+                              ^^line-03
+                              ^^line-04
+                              ^^line-05
+                              )
+                 )
+               (bounded-profile :class 'bounded-object
+                 object-list (list ^^profile)
+                 )
+               )
+  )
+
+;;; (define-method get-component-description  Pipes-with-Parallel-Pattern-Structure-Support-style-01-L-shape-class()
+;;;   (format nil "L ~a X ~a X ~a." !height !width !thickness)
+;;;   )

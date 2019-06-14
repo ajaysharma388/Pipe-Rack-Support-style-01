@@ -1,0 +1,310 @@
+(in-package :aml)
+
+
+(define-class Pipes-with-Parallel-Pattern-Structure-Support-style-01-rack-view-viewports-class
+  :inherit-from (object)
+  :properties (
+               geometry-source-object (default nil)
+
+               viewport-0-eye-vector (loop
+                                       for i in (the pipes-direction (:from ^^geometry-source-object))
+                                       do collect (* -1 i))
+               viewport-0-up-vector (cross-product ^viewport-0-eye-vector (cross-product (the rack-up-vector (:from ^^geometry-source-object)) ^viewport-0-eye-vector))
+               
+               viewport-1-eye-vector (loop for i in (the pipes-direction (:from ^^geometry-source-object)) do collect (* -1 i))
+               viewport-1-up-vector  (cross-product ^viewport-1-eye-vector (cross-product (the rack-up-vector (:from ^^geometry-source-object)) ^viewport-1-eye-vector))
+                                             
+               viewport-2-eye-vector (the rack-up-vector (:from ^^geometry-source-object))
+               viewport-2-up-vector  (cross-product ^viewport-2-eye-vector (cross-product (the rack-beam-vector (:from ^^geometry-source-object)) ^viewport-2-eye-vector))
+
+               viewport-3-eye-vector (the rack-beam-vector (:from ^^geometry-source-object))
+               viewport-3-up-vector  (cross-product ^viewport-2-eye-vector (cross-product (the rack-up-vector (:from ^^geometry-source-object)) ^viewport-2-eye-vector))
+                              
+               viewport-0-camera-target-coords (let* (
+                                                      (min-max-list
+                                                       (get-objects-minmax-box-points-by-vectors
+                                                        ^viewport-0-objects-to-fit-within-limits-list
+                                                        (cross-product ^viewport-0-up-vector ^viewport-0-eye-vector)
+                                                        ^viewport-0-up-vector
+                                                        )
+                                                       )
+                                                      )
+                                                 (mid-point (nth 0 min-max-list) (nth 1 min-max-list))
+                                                 )
+               
+               viewport-1-camera-target-coords (let* (
+                                                      (min-max-list
+                                                       (get-objects-minmax-box-points-by-vectors
+                                                        ^viewport-1-objects-to-fit-within-limits-list
+                                                        (cross-product
+                                                         ^viewport-1-up-vector
+                                                         ^viewport-1-eye-vector
+                                                         )
+                                                        ^viewport-1-up-vector
+                                                        )
+                                                       )
+                                                      )
+                                                 (mid-point (nth 0 min-max-list) (nth 1 min-max-list))
+                                                 )
+               
+               viewport-2-camera-target-coords (let* (
+                                                      (min-max-list
+                                                       (get-objects-minmax-box-points-by-vectors
+                                                        ^viewport-2-objects-to-fit-within-limits-list
+                                                        (cross-product
+                                                         ^viewport-2-up-vector
+                                                         ^viewport-2-eye-vector
+                                                         )
+                                                        ^viewport-2-up-vector
+                                                        )
+                                                       )
+                                                      )
+                                                 (mid-point (nth 0 min-max-list) (nth 1 min-max-list))
+                                                 )
+
+               viewport-3-camera-target-coords (let* (
+                                                      (min-max-list
+                                                       (get-objects-minmax-box-points-by-vectors
+                                                        ^viewport-3-objects-to-fit-within-limits-list
+                                                        (cross-product
+                                                         ^viewport-3-up-vector
+                                                         ^viewport-3-eye-vector
+                                                         )
+                                                        ^viewport-3-up-vector
+                                                        )
+                                                       )
+                                                      )
+                                                 (mid-point (nth 0 min-max-list) (nth 1 min-max-list))
+                                                 )
+               
+               viewports-percent-size-list                  (default nil)
+               viewports-1-percent-size-list                (default nil)
+               
+               viewport-0-objects-to-fit-within-limits-list (default nil)
+               viewport-0-objects-to-include-list           (default nil)                   
+               viewport-0-objects-to-display                (remove-duplicates (append ^viewport-0-objects-to-fit-within-limits-list ^viewport-0-objects-to-include-list))
+               
+               viewport-2-objects-to-fit-within-limits-list (default nil)
+               viewport-2-objects-to-include-list           (default nil)
+               viewport-2-objects-to-display                (remove-duplicates (append ^viewport-2-objects-to-fit-within-limits-list ^viewport-2-objects-to-include-list))
+               
+               viewport-1-objects-to-fit-within-limits-list (default nil)
+               viewport-1-objects-to-include-list           (default nil)
+               viewport-1-objects-to-display                (remove-duplicates (append ^viewport-1-objects-to-fit-within-limits-list ^viewport-1-objects-to-include-list))
+
+
+               viewport-3-objects-to-fit-within-limits-list (default nil)
+               viewport-3-objects-to-include-list           (default nil)
+               viewport-3-objects-to-display                (remove-duplicates (append ^viewport-3-objects-to-fit-within-limits-list ^viewport-3-objects-to-include-list))
+               
+               viewport-0-objects-max-dim-list (let* (
+                                                      (min-max-list (get-objects-minmax-box-by-vectors
+                                                                     ^viewport-0-objects-to-fit-within-limits-list
+                                                                     (cross-product
+                                                                      ^viewport-0-up-vector
+                                                                      ^viewport-0-eye-vector
+                                                                      )
+                                                                     ^viewport-0-up-vector
+                                                                     )
+                                                        )
+                                                      (minmax-x (nth 0 min-max-list))
+                                                      (minmax-y (nth 1 min-max-list))
+                                                      (min-values (nth 0 min-max-list));; (minX minY minZ)
+                                                      (max-values (nth 1 min-max-list));; (maxX maxY maxZ)
+                                                      )
+                                                 (list
+                                                  (- (nth 1 minmax-x) (nth 0 minmax-x))
+                                                  (- (nth 1 minmax-y) (nth 0 minmax-y))
+                                                  )
+                                                 )
+               viewport-1-objects-max-dim-list (let* (
+                                                      (min-max-list (get-objects-minmax-box-by-vectors
+                                                                     ^viewport-1-objects-to-fit-within-limits-list
+                                                                     (cross-product
+                                                                      ^viewport-1-up-vector
+                                                                      ^viewport-1-eye-vector
+                                                                      )
+                                                                     ^viewport-1-up-vector
+                                                                     )
+                                                        )
+                                                      (minmax-x (nth 0 min-max-list))
+                                                      (minmax-y (nth 1 min-max-list))
+                                                      (min-values (nth 0 min-max-list));; (minX minY minZ)
+                                                      (max-values (nth 1 min-max-list));; (maxX maxY maxZ)
+                                                      )
+                                                 (list
+                                                  (- (nth 1 minmax-x) (nth 0 minmax-x))
+                                                  (- (nth 1 minmax-y) (nth 0 minmax-y))
+                                                  )
+                                                 )
+               viewport-2-objects-max-dim-list (let* (
+                                                      (min-max-list
+                                                       (get-objects-minmax-box-by-vectors
+                                                        ^viewport-2-objects-to-fit-within-limits-list
+                                                        (cross-product ^viewport-2-up-vector ^viewport-2-eye-vector)
+                                                        ^viewport-2-up-vector)
+                                                       )
+                                                      (minmax-x (nth 0 min-max-list))
+                                                      (minmax-y (nth 1 min-max-list))
+                                                      (min-values (nth 0 min-max-list));; (minX minY minZ)
+                                                      (max-values (nth 1 min-max-list));; (maxX maxY maxZ)
+                                                      )
+                                                 (list
+                                                  (- (nth 1 minmax-x) (nth 0 minmax-x))
+                                                  (- (nth 1 minmax-y) (nth 0 minmax-y))
+                                                  )
+                                                 )
+
+
+               viewport-3-objects-max-dim-list (let* (
+                                                      (min-max-list
+                                                       (get-objects-minmax-box-by-vectors
+                                                        ^viewport-3-objects-to-fit-within-limits-list
+                                                        (cross-product ^viewport-2-up-vector ^viewport-2-eye-vector)
+                                                        ^viewport-2-up-vector)
+                                                       )
+                                                      (minmax-x (nth 0 min-max-list))
+                                                      (minmax-y (nth 1 min-max-list))
+                                                      (min-values (nth 0 min-max-list));; (minX minY minZ)
+                                                      (max-values (nth 1 min-max-list));; (maxX maxY maxZ)
+                                                      )
+                                                 (list
+                                                  (- (nth 1 minmax-x) (nth 0 minmax-x))
+                                                  (- (nth 1 minmax-y) (nth 0 minmax-y))
+                                                  )
+                                                 )               
+               paper-width (default nil);; take value from parent drawing-layout-class
+               paper-height (default nil);; take value from parent drawing-layout-class
+               viewports-x-y-dim-on-paper-list (list
+                                                (* (nth 0 ^viewports-percent-size-list) ^paper-width  0.01)
+                                                (* (nth 1 ^viewports-percent-size-list) ^paper-height  0.01)
+                                                )
+               viewport-0-scale-factor-list  (list
+                                              1
+                                              (compute-viewport-scale
+                                               (nth 0 (the superior viewports-percent-size-list))
+                                               (nth 1 (the superior viewports-percent-size-list))
+                                               (the superior paper-width) 
+                                               (the superior paper-height)
+                                               (nth 0 
+                                                 (the superior viewport-0-objects-max-dim-list)) 
+                                               (nth 1 
+                                                 (the superior viewport-0-objects-max-dim-list)) :offsets-percentage 1))
+
+               viewport-1-scale-factor-list  (list
+                                              1
+                                              (compute-viewport-scale
+                                               (nth 0 (the superior viewports-1-percent-size-list))
+                                               (nth 1 (the superior viewports-1-percent-size-list))
+                                               (the superior paper-width) 
+                                               (the superior paper-height)
+                                               (nth 0 
+                                                 (the superior viewport-1-objects-max-dim-list)) 
+                                               (nth 1 
+                                                 (the superior viewport-1-objects-max-dim-list)) :offsets-percentage 1))
+
+               viewport-2-scale-factor-list  (list
+                                              1
+                                              (compute-viewport-scale
+                                               (nth 0 (the superior viewports-1-percent-size-list))
+                                               (nth 1 (the superior viewports-1-percent-size-list))
+                                               (the superior paper-width) 
+                                               (the superior paper-height)
+                                               (nth 0 
+                                                 (the superior viewport-2-objects-max-dim-list)) 
+                                               (nth 1 
+                                                 (the superior viewport-2-objects-max-dim-list)) :offsets-percentage 1))
+               viewport-3-scale-factor-list  (list
+                                              1
+                                              (compute-viewport-scale
+                                               (nth 0 (the superior viewports-1-percent-size-list))
+                                               (nth 1 (the superior viewports-1-percent-size-list))
+                                               (the superior paper-width) 
+                                               (the superior paper-height)
+                                               (nth 0 
+                                                 (the superior viewport-3-objects-max-dim-list)) 
+                                               (nth 1 
+                                                 (the superior viewport-3-objects-max-dim-list)) :offsets-percentage 1))
+
+               viewport-to-viewport-offset (default 3)
+               viewport-to-2-viewport-offset (default 1)
+               viewport-to-1-viewport-offset (default 5)
+               viewport-to-other-viewport-offset (default 7)
+               
+               )
+  :subobjects(
+              (viewport-0 :class 'drawing-viewport-class
+                up-vector  (the rack-up-vector (:from ^^geometry-source-object)) ;	(convert-vector (the part-coordinate-system (:from ^^geometry-source-object)) '(0 0 1) :from :local :to :global)
+                eye-vector	(loop
+                             for i in (the pipes-direction (:from ^^geometry-source-object))
+                             do collect (* -1 i)) ;	(convert-vector (the part-coordinate-system (:from ^^geometry-source-object))'(0 -1 0)  :from :local :to :global)
+                object-list	^^viewport-0-objects-to-display
+                size-list 	^^viewports-percent-size-list;; percentage
+                position-list	'(5  10);; percentage lower left corner
+                camera-target-coords ^^viewport-0-camera-target-coords;; the x,y,z location on the geometry to set focus
+                scale-factor-set? t
+                scale-factor-list ^^viewport-0-scale-factor-list
+                                        ; draw-geometry-subobjects? t                
+                render 'hidden-line
+                show-silhoutes? t
+                hidden-line-type 'dash
+                master-viewport? t
+                )
+
+              (viewport-1 :class 'drawing-viewport-class
+                up-vector     ^^viewport-1-up-vector ;	(convert-vector (the part-coordinate-system (:from ^^geometry-source-object)) '(0 0 1) :from :local :to :global)
+                eye-vector	   ^^viewport-1-eye-vector ;(loop for i in (the pipes-direction (:from ^^geometry-source-object)) do collect (* -1 i))
+                object-list	^^viewport-1-objects-to-display
+                size-list 	   ^^viewports-1-percent-size-list
+                                        ; position-list	'(10  60);; percentage lower left corner
+                camera-target-coords ^^viewport-1-camera-target-coords;; the x,y,z location on the geometry to set focus
+                scale-factor-set? t
+                scale-factor-list ^^viewport-1-scale-factor-list
+                                        ; draw-geometry-subobjects? t
+                hidden-line-type 'dash
+                render 'hidden-line
+                show-silhoutes? t
+                viewport-y-reference-object ^^viewport-0
+                viewport-y-reference-positive? t
+                viewport-y-reference-distance ^^viewport-to-1-viewport-offset
+                )
+               
+              (viewport-2 :class 'drawing-viewport-class
+                up-vector   (the rack-beam-vector (:from ^^geometry-source-object))
+                eye-vector	 (the rack-up-vector (:from ^^geometry-source-object))
+                object-list	^^viewport-2-objects-to-display
+                size-list 	^^viewports-1-percent-size-list
+                                        ; position-list	'(60  10);; percentage lower left corner
+                camera-target-coords ^^viewport-2-camera-target-coords;; the x,y,z location on the geometry to set focus
+                scale-factor-set? t
+                scale-factor-list ^^viewport-2-scale-factor-list
+                                        ; draw-geometry-subobjects? t
+                
+                render 'hidden-line
+                show-silhoutes? t
+                hidden-line-type 'dash
+                viewport-x-reference-object ^^viewport-0
+                viewport-x-reference-positive? t
+                viewport-x-reference-distance ^^viewport-to-2-viewport-offset
+                )
+              (viewport-3 :class 'drawing-viewport-class
+                up-vector  (the rack-up-vector (:from ^^geometry-source-object)) ;	(convert-vector (the part-coordinate-system (:from ^^geometry-source-object)) '(0 0 1) :from :local :to :global)
+                eye-vector	(the rack-beam-vector (:from ^^geometry-source-object))
+                object-list	^^viewport-3-objects-to-display
+                size-list 	^^viewports-1-percent-size-list
+                                        ; position-list	'(50  50);; percentage lower left corner
+                camera-target-coords ^^viewport-1-camera-target-coords;; the x,y,z location on the geometry to set focus
+                scale-factor-set? t
+                scale-factor-list ^^viewport-1-scale-factor-list
+                                        ; draw-geometry-subobjects? t
+                
+                render 'hidden-line
+                show-silhoutes? t
+                hidden-line-type 'dash
+                viewport-y-reference-object ^^viewport-2
+                viewport-y-reference-positive? t
+                viewport-y-reference-distance ^^viewport-to-other-viewport-offset
+                )
+              
+              )
+  )

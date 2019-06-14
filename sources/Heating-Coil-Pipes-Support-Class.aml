@@ -1,0 +1,148 @@
+(in-package :aml)
+
+
+;;; (compile-system :Pipe-Rack-Support-style-01 :force? t :forget? t :all? t)
+;;; (create-module "tank-heating-coil-support-style-01-module" "2019.03.28.1" (list :Pipe-Rack-Support-style-01) '(1))
+
+(define-class Heating-Coil-Pipes-Support-Class
+  :inherit-from(Pipes-with-Parallel-Pattern-Structure-Support-style-01-geometry-and-drawing-class)
+  :properties(
+              ;;;; Main Properties
+              Source-Heating-Coil-Object                      (default nil)
+              Pipe-Centerline-start-end-pt-global-coords-list (get-main-pipelines-coords-list ^Source-Heating-Coil-Object)
+              Support-Racks-Spacing                           (default 120)
+              Support-Rack-at-Center                          (default nil)
+              Support-Beam-End-Extension                      (default 10)
+              Support-Legs-Spacing                            (default 60)
+              Support-Leg-at-Center                           (default nil)
+              Support-Beam-Type                               (default 'Angle)
+              Support-Beam-Standard                           (default 'US)
+              Support-Beam-Size                               (default nil)
+              Support-U-bolt-thickness                        (default 0.4)
+              Pipes-OD-value                                  (the nozzle-nominal-size (:from (the nozzle-1-object (:from ^Source-Heating-Coil-Object))))
+              pipes-od                                        (if (> ^pipes-od-value 12)
+                                                                ^pipes-od-value
+                                                                (loop 
+                                                                  for i in (the superior pipes-od-list) 
+                                                                  do 
+                                                                  (if 
+                                                                      (equal 
+                                                                       (the superior pipes-od-value) 
+                                                                       (nth 0 i)) 
+                                                                    (return 
+                                                                     (nth 1 i))))
+                                                                )
+              pipes-od-list                                   '((1 1.315) (2 2.375) (3 3.5) (4 4.5) (5 5.563) (6 6.625) (8 8.625) (10 10.75) (12 12.75))  
+              ;;;User Inputs (more properties)
+              
+              Support-U-bolt-extensions                       (default 2)
+              Support-up-vector                               (default '(0 0 1))
+              Support-Rack-thickness                          (default 0.5)
+              Support-leg-thickness                           (default 0.5)
+              Support-Rack-Web-length                         (default 2)
+              Support-Rack-flange-length                      (default 2)
+              Support-leg-clr-from-top                        (default 0.3)
+              Support-Leg-Length                              (default 50)
+              Support-Leg-Web-Length                          (default 2)
+              Support-Leg-Flange-Length                       (default 2)
+              Support-rack-to-pipe-clr                        (default 0.1)             
+              Support-U-Bolt-To-Pipe-Clr                      (default 0.1)
+              Support-Nut-Thickness                           (default 0.5) 
+              
+              ;------------internal-properties--------------------------------
+
+              
+              pipe-od-clr-to-u-bolt                           ^Support-U-Bolt-To-Pipe-Clr
+              Leg-length                                      ^Support-leg-length
+              Legs-clr-from-top                               ^Support-leg-clr-from-top
+              Rack-web-length                                 ^Support-Rack-Web-length
+              Rack-flange-length                              ^Support-Rack-flange-length
+              Rack-web-thk                                    ^Support-Rack-thickness
+              Rack-flange-thk                                 ^Support-Rack-thickness
+              leg-flange-thickness                            ^Support-leg-thickness
+              leg-web-thickness                               ^Support-leg-thickness
+              central-Rack-Plane-point                        (default '(30 0 0))
+              Rack-up-vector                                  ^Support-up-vector
+              U-Bolts-Extensions                              ^Support-U-bolt-extensions                                                                
+              U-Bolts-Diam                                    ^Support-U-bolt-thickness 
+              Rack-End-0-Extension                            ^Support-Beam-End-Extension
+              Rack-End-1-Extension                            ^Support-Beam-End-Extension
+              Rack-Beam-Type                                  ^Support-Beam-Type
+              leg-beam-type                                   ^Support-Beam-Type
+              rack-spacing                                    ^Support-Racks-Spacing
+              rack-at-center?                                 ^Support-Rack-at-Center
+              leg-spacing                                     ^Support-Legs-Spacing
+              rack-leg-at-center?                             ^Support-Leg-at-Center
+              )
+  )
+
+(define-method property-classification-list Heating-Coil-Pipes-Support-Class ()
+  '(
+    ("main-properties"
+     (
+      "Main Properties"   
+      Support-Racks-Spacing     
+      Support-Rack-at-Center    
+      Support-Beam-End-Extension
+      Support-Legs-Spacing      
+      Support-Leg-at-Center     
+      Support-Beam-Type         
+      Support-Beam-Standard     
+      Support-Beam-Size         
+      Support-U-bolt-thickness  
+      Pipes-OD
+      :blank
+      "More Properties"
+      
+      Support-U-bolt-extensions
+      Support-up-vector        
+      Support-Rack-thickness   
+      Support-leg-thickness    
+      Support-Rack-Web-length  
+      Support-Rack-flange-length
+      Support-leg-clr-from-top  
+      Support-Leg-Length        
+      Support-Leg-Web-Length    
+      Support-Leg-Flange-Length 
+      Support-rack-to-pipe-clr  
+      Support-U-Bolt-To-Pipe-Clr
+      Support-Nut-Thickness     
+      )
+     )
+    )
+  )
+
+
+(define-method post-edit-node-method Heating-Coil-Pipes-Support-Class ()
+  (display-Heating-Coil-Pipes-Support-manager-form
+   self
+   )
+  )
+
+(defun display-Heating-Coil-Pipes-Support-manager-form (heating-coil-object
+                                                             &key
+                                                             (new? t)
+                                                             )
+  (let* (
+         ;; Note a "add-form"
+         (form (display-form 'heating-coil-object-form
+                 :class 'Heating-Coil-Pipes-Support-manager-form-class
+                 :new? new?
+                 )
+           )
+         )
+    (when form
+      (change-formula (the selected-Heating-Coil-object self (:from form))
+        (append
+         (find-the-trace
+          heating-coil-object
+          :from (the selected-heating-coil-object self (:from form))
+          )
+         '((:error nil :relation nil))
+         )
+        )
+      (update form)
+      )
+    form
+    )
+  )

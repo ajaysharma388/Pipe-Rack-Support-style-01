@@ -1,0 +1,227 @@
+(in-package :aml)
+
+
+(define-class  Pipes-with-Parallel-Pattern-Structure-Support-style-01-rack-view-dimensions-class
+  :inherit-from(object)
+  :properties (
+               position                         (default nil)
+               geometry-source-object           (default nil)
+               viewport-0-object             	(default nil);; this is defined in the parent layout class
+               viewport-1-object                (default nil);; this is defined in the parent layout class
+               viewport-2-object                (default nil);; this is defined in the parent layout class
+               viewport-3-object                (default nil)
+               control-point-source-object      (default nil)
+               legs-pt-list                     (children (the legs-pt (:from ^control-point-source-object)))
+               pipe-ctr-list                    (children (the pipe-center-pt (:from ^control-point-source-object)))
+               )  
+  :subobjects (
+               (rack-length :class 'dim-linear-for-drawings-system-class
+                 point-1-coords-in-viewport-1-object (the rack-sta-pt coordinates (:from ^^control-point-source-object))
+                 point-2-coords-in-viewport-2-object (the rack-end-pt coordinates (:from ^^control-point-source-object))
+                 viewport-1-object ^^viewport-0-object
+                 viewport-2-object ^^viewport-0-object
+                 dim-direction-coords '(1 0 0)
+                 dim-line-offset 1
+                 dim-flip-side? t
+                 )
+               (leg-spacing :class (if (< 1 (length !legs-pt-list))
+                                     'dim-linear-for-drawings-system-class
+                                     'null-object
+                                     )
+                 point-1-coords-in-viewport-1-object (the bottom-coordinates  (:from (nth 0 ^^legs-pt-list)))
+                 point-2-coords-in-viewport-2-object (the bottom-coordinates (:from (nth 1 ^^legs-pt-list)))
+                 viewport-1-object ^^viewport-0-object
+                 viewport-2-object ^^viewport-0-object
+                 dim-direction-coords '(1 0 0) 
+                 dim-line-offset 1
+                 dim-flip-side? nil
+                 )
+               
+               (rack-sta-to-first-leg-dim :class 'dim-linear-for-drawings-system-class
+                 point-1-coords-in-viewport-1-object (the rack-sta-pt coordinates (:from ^^control-point-source-object))
+                 point-2-coords-in-viewport-2-object (the bottom-coordinates (:from (nth 0 ^^legs-pt-list)))
+                 viewport-1-object ^^viewport-0-object
+                 viewport-2-object ^^viewport-0-object
+                 dim-direction-coords '(1 0 0) 
+                 dim-line-offset 1
+                 dim-flip-side? nil
+                 )
+
+               (pipe-ctr-to-ctr-dim :class 'series-object
+                 class-expression     'dim-linear-for-drawings-system-class
+                 series-prefix        'length
+                 quantity             (- (length ^^pipe-ctr-list) 1)
+                 init-form '(
+                             point-1-coords-in-viewport-1-object (the coordinates (:from (nth ^index ^^pipe-ctr-list)))
+                             point-2-coords-in-viewport-2-object (the coordinates (:from (nth (+ ^index 1) ^^pipe-ctr-list)))
+                             viewport-1-object ^^viewport-0-object
+                             viewport-2-object ^^viewport-0-object
+                             dim-direction-coords '(1 0 0) 
+                             dim-line-offset 0.5
+                             dim-flip-side? t
+                             )
+                 )
+               (rack-start-to-last-pipe-dim :class 'dim-linear-for-drawings-system-class
+                 point-1-coords-in-viewport-1-object (the rack-sta-pt coordinates (:from ^^control-point-source-object))
+                 point-2-coords-in-viewport-2-object (the coordinates (:from (first (last ^^pipe-ctr-list))) )
+                 viewport-1-object ^^viewport-0-object
+                 viewport-2-object ^^viewport-0-object
+                 dim-direction-coords '(1 0 0)
+                 dim-line-offset 0.4
+                 dim-flip-side? t
+                 )
+
+
+
+
+               (leg-flange-length :class 'dim-linear-for-drawings-system-class
+                 point-1-coords-in-viewport-1-object  (the leg-bottom-pt coordinates  (:from (nth 0 ^^legs-pt-list)))
+                 point-2-coords-in-viewport-2-object  (the bottom-flange-length-pt coordinates  (:from (nth 0 ^^legs-pt-list)))
+                 viewport-1-object ^^viewport-2-object
+                 viewport-2-object ^^viewport-2-object
+                 dim-direction-coords '(0 1 0)
+                 dim-line-offset 0.4
+                 dim-flip-side? nil
+                 )
+
+               (leg-web-length :class 'dim-linear-for-drawings-system-class
+                 point-1-coords-in-viewport-1-object  (the leg-bottom-pt coordinates  (:from (nth 0 ^^legs-pt-list)))
+                 point-2-coords-in-viewport-2-object  (the bottom-web-length-pt coordinates  (:from (nth 0 ^^legs-pt-list)))
+                 viewport-1-object ^^viewport-2-object
+                 viewport-2-object ^^viewport-2-object
+                 dim-direction-coords '(1 0 0)
+                 dim-line-offset 0.4
+                 dim-flip-side? nil
+                 )
+
+               (leg-flange-thk :class 'dim-linear-for-drawings-system-class
+                 point-1-coords-in-viewport-1-object  (the bottom-flange-length-pt coordinates  (:from (nth 0 ^^legs-pt-list)))
+                 point-2-coords-in-viewport-2-object  (the bottom-flange-thk-pt coordinates  (:from (nth 0 ^^legs-pt-list)))
+                 viewport-1-object ^^viewport-2-object
+                 viewport-2-object ^^viewport-2-object
+                 dim-direction-coords '(1 0 0)
+                 dim-line-offset 0.4
+                 dim-flip-side? t
+                 )
+
+               (leg-web-thk :class 'dim-linear-for-drawings-system-class
+                 point-1-coords-in-viewport-1-object  (the bottom-web-length-pt coordinates  (:from (nth 0 ^^legs-pt-list)))
+                 point-2-coords-in-viewport-2-object  (the bottom-web-thk-pt coordinates  (:from (nth 0 ^^legs-pt-list)))
+                 viewport-1-object ^^viewport-2-object
+                 viewport-2-object ^^viewport-2-object
+                 dim-direction-coords '(0 1 0)
+                 dim-line-offset 0.4
+                 dim-flip-side? t
+                 )
+               
+               (u-bolt-thk :class 'dim-linear-for-drawings-system-class
+                 point-1-coords-in-viewport-1-object  (the u-bolt-thk-pt-0 coordinates (:from ^^control-point-source-object))
+                 point-2-coords-in-viewport-2-object  (the u-bolt-thk-pt-1 coordinates  (:from (nth 0 ^^legs-pt-list)))
+                 viewport-1-object ^^viewport-1-object
+                 viewport-2-object ^^viewport-1-object
+                 dim-direction-coords '(1 0 0)
+                 dim-line-offset 0.1
+                 dim-flip-side? nil
+                 )
+
+               (u-bolt-complete-height :class 'dim-linear-for-drawings-system-class
+                 point-1-coords-in-viewport-1-object  (the u-bolt-thk-pt-1 coordinates (:from ^^control-point-source-object))
+                 point-2-coords-in-viewport-2-object  (the u-bolt-height-pt coordinates (:from ^^control-point-source-object))
+                 viewport-1-object ^^viewport-1-object
+                 viewport-2-object ^^viewport-1-object
+                 dim-direction-coords '(0 1 0)
+                 dim-line-offset 2
+                 dim-flip-side? nil
+                 )
+               
+               (u-bolt-default-height :class 'dim-linear-for-drawings-system-class
+                 point-1-coords-in-viewport-1-object  (the u-bolt-default-length-pt-0 coordinates (:from ^^control-point-source-object))
+                 point-2-coords-in-viewport-2-object  (the u-bolt-default-length-pt-1 coordinates (:from ^^control-point-source-object))
+                 viewport-1-object ^^viewport-1-object
+                 viewport-2-object ^^viewport-1-object
+                 dim-direction-coords '(0 1 0)
+                 dim-line-offset 0.4
+                 dim-flip-side? t
+                 )
+               
+               
+               (rack-leg-clr :class 'dim-linear-for-drawings-system-class
+                 point-1-coords-in-viewport-1-object (the leg-top-pt coordinates  (:from (nth 0 ^^legs-pt-list)))
+                 point-2-coords-in-viewport-2-object (the leg-clr-pt coordinates  (:from (nth 0 ^^legs-pt-list)))
+                 viewport-1-object ^^viewport-3-object
+                 viewport-2-object ^^viewport-3-object
+                 dim-direction-coords '(0 1 0) 
+                 dim-flip-side? nil
+                                        ;  dim-line-offset 4
+                 )
+
+
+                (rack-web-thk :class 'dim-linear-for-drawings-system-class
+                 point-1-coords-in-viewport-1-object (the rack-sta-bottom-pt coordinates (:from ^^control-point-source-object))
+                 point-2-coords-in-viewport-2-object (the rack-sta-bottom-web-thk-pt coordinates (:from ^^control-point-source-object))
+                 viewport-1-object ^^viewport-3-object
+                 viewport-2-object ^^viewport-3-object
+                 dim-direction-coords '(1 0 0) 
+                 dim-flip-side? nil
+                 dim-line-offset 0.9
+                 )
+
+                (rack-flange-thk :class 'dim-linear-for-drawings-system-class
+                 point-1-coords-in-viewport-1-object (the rack-sta-flange-up-thk-pt coordinates (:from ^^control-point-source-object))
+                 point-2-coords-in-viewport-2-object (the rack-sta-flange-bottom-thk-pt coordinates (:from ^^control-point-source-object))
+                 viewport-1-object ^^viewport-3-object
+                 viewport-2-object ^^viewport-3-object
+                 dim-direction-coords '(0 1 0) 
+                 dim-flip-side? t
+                 dim-line-offset 0.2
+                 )
+
+                (rack-flange-length :class 'dim-linear-for-drawings-system-class
+                 point-1-coords-in-viewport-1-object (the rack-sta-bottom-pt coordinates (:from ^^control-point-source-object))
+                 point-2-coords-in-viewport-2-object (the rack-sta-flange-bottom-thk-pt coordinates (:from ^^control-point-source-object))
+                 viewport-1-object ^^viewport-3-object
+                 viewport-2-object ^^viewport-3-object
+                 dim-direction-coords '(1 0 0) 
+                 dim-flip-side? nil
+                 dim-line-offset 1
+                 )
+
+                (rack-mark :class 'note-label-for-bom-component-mark-class
+                  viewport-object-list (list ^^viewport-0-object)
+                  text-size                3
+                  component-source-object (nth ^^position (the racks-list (:from ^^geometry-source-object))) ;(the rack (:from (nth ^index (the racks-list (:from ^^geometry-source-object)))))
+                  target-points-coords-in-viewport-object-list (list
+                                                                (the control-points rack-end-pt coordinates (:from (nth ^^position (the racks-list (:from ^^geometry-source-object)))))
+                                                                )
+                  origin-position (nth 0 '(upper-right upper-left lower-left lower-right))
+                  origin-position-offset 0.5
+                  circled? t
+                  text-string-list (if ^component-source-object
+                                     (the assembly-sequence standard-mark (:from ^component-source-object))
+                                     "")
+                  )
+                
+                (General-Note-00 :class 'text-for-drawings-system-class
+                  viewport-object-for-origin-coords  (the superior superior superior viewports-objects main-viewport-object)
+                  origin-coords-in-viewport-object '(-4.7 -3.9 0)
+                  text-string    "Note:-\\All the Legs are equally spaced and have equal dimensions.\\"                   
+                  alignment-list (list ':center ':left)
+                  )
+               
+                
+                (bom :class 'general-table-info-for-drawings-system-class
+                    label-table-list (nth 1 (the components-bom-data (:from (the assembly-sequence (:from (nth ^^position (the racks-list (:from ^^geometry-source-object))))))))
+                    label-table-intermediate-lines? nil
+                    table-data-list (nth 2 (the components-bom-data (:from (the assembly-sequence (:from (nth ^^position (the racks-list (:from ^^geometry-source-object))))))))
+                    table-title-text (nth 0 (the components-bom-data (:from (the assembly-sequence (:from (nth ^^position (the racks-list (:from ^^geometry-source-object))))))))
+                    viewport-object-for-origin-coords (the main-viewport-object (:from ^^viewports-objects))
+                    attachment-point-coords-in-viewport-object (the upper-right-corner (:from ^^drawing-plot-frame-object))
+                    attachment-corner 3
+                    )
+               )
+  )
+
+
+
+                     
+ 

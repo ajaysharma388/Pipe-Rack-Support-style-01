@@ -1,0 +1,25 @@
+(in-package :aml)
+
+(define-class  Pipes-with-Parallel-Pattern-Structure-Support-style-01-plan-view-drawing-layout-class
+  :inherit-from(drawing-layout-class)
+  :properties(
+              viewport-0-objects-to-fit-within-limits-list (default nil)
+              viewport-0-objects-to-include-list	        (default nil)
+              viewport-0-camera-target-coords              (default nil)
+              viewports-percent-size-list                  (default nil)
+              paper-size                                   '(11 17)
+              paper-orientation	                          'landscape
+              paper-dim-list                               ^paper-size             
+              viewports-inheritance-list                   '(Pipes-with-Parallel-Pattern-Structure-Support-style-01-plan-view-viewports-class)
+              dimensions-inheritance-list                  '(Pipes-with-Parallel-Pattern-Structure-Support-style-01-plan-view-dimensions-class)
+              text-size                                    0.056
+              viewport-0-object                           (the superior viewports-objects viewport-0)
+              ) 
+  )
+
+              
+             
+                   
+                   
+
+                  

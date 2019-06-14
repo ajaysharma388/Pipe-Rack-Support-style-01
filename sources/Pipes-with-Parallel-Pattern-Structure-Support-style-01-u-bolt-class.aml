@@ -1,0 +1,122 @@
+(in-package :aml)
+
+
+(define-class Pipes-with-Parallel-Pattern-Structure-Support-style-01-u-bolt-class
+  :inherit-from (group-object  u-bolt-component-mixin)
+  :properties(                                        ;u-bolt-properties
+              u-bolt-diameter (default .2)
+              u-bolt-radius (default .2)
+              elbow-angle  (default 180)
+              pipe-od-clr-to-u-bolt (default .5)
+              u-bolt-clr (default 1)
+              nut-fixed-y-offset (default nil)
+              rack-flange-thk (default nil)
+              ;;; pipe-properties
+              pipe-diameter  (default .5)
+              pipe-od-clr-to-structure (default .5)
+              pipe-thickness (default .05)
+              pipe-length (default 10)
+                                        ;cylinder-properties
+              cylinder-height (+ ^pipe-radius ^rack-flange-thk)
+                                        ;rack-properties
+                                        ;rack-flange-thk  (default .2)                                
+              object-list (list ^cylinder-1 ^cylinder-2 ^elbow  ^nut-0 ^nut-1)
+
+              u-bolt-fixed-length (default nil)
+
+                                        ;nut-properties
+              nut-thk (default 0.5)
+
+              
+              (cylinder-1 :class 'cylinder-object
+                  color "Orange"  
+                  height (+ (/ ^^pipe-diameter 2) ^^rack-flange-thk ^^pipe-od-clr-to-structure ^^u-bolt-clr ^^u-bolt-fixed-length ^^nut-thk)
+                  diameter  ^^u-bolt-diameter
+                  orientation (list
+                               (rotate 90 '(1 0 0))
+                               (translate (list
+                                           (+ (/ ^^u-bolt-diameter 2) ^^pipe-od-clr-to-u-bolt (/ ^^pipe-diameter 2) )
+                                           (/ ^height -2)
+                                           0
+                                           )
+                                          )
+                               )                  
+                  )
+              
+              (cylinder-2 :class 'cylinder-object
+                  color "Orange"
+                  height  (+ (/ ^^pipe-diameter 2) ^^rack-flange-thk  ^^pipe-od-clr-to-structure ^^u-bolt-clr ^^u-bolt-fixed-length ^^nut-thk)
+                  diameter   ^^u-bolt-diameter
+                  orientation (list
+                               (rotate 90 '(1 0 0))
+                               (translate (list
+                                           (-(+ (/ ^^u-bolt-diameter 2) ^^pipe-od-clr-to-u-bolt (/ ^^pipe-diameter 2)))
+                                           (/ ^height -2)
+                                           0
+                                           )
+                                          )
+                               )
+                  )
+              
+              (elbow :class 'open-elbow-object
+                  COLOR  "Orange"
+                  angle  ^^elbow-angle
+                  elbow-radius  (+ (/ ^^u-bolt-diameter 2) ^^pipe-od-clr-to-u-bolt (/ ^^pipe-diameter 2))
+                  diameter ^^u-bolt-diameter
+                  orientation  (list
+                                (rotate 90 '(0 0 1))
+                                (rotate 90 '(-1 0 0))
+                                )
+                  )
+
+            
+
+              
+;;;               (pipe :class 'pipe-object
+;;;                   outer-diameter  ^^pipe-diameter 
+;;;                   thickness ^^pipe-thickness
+;;;                   height ^^pipe-length
+;;;                   )           
+
+               
+              (nut-0 :class 'nut-style-01-class
+                  color "cyan"
+                  nut-hole-diameter ^^u-bolt-diameter
+                  nut-cap-height ^^nut-thk
+                  radius (* ^nut-hole-diameter 2)
+                  orientation (list
+                               (rotate 90 '(1 0 0))
+                               (translate (list 
+                                           (+ (/ ^^pipe-diameter 2) (/ ^^u-bolt-diameter 2) ^^pipe-od-clr-to-u-bolt)
+                                           (- (+ ^^nut-fixed-y-offset ^^rack-flange-thk))
+                                           0
+                                           )
+                                          )
+                               )
+                  
+                  )
+               
+
+              (nut-1 :class 'nut-style-01-class
+                  color "cyan"
+                  nut-hole-diameter ^^u-bolt-diameter
+                  nut-cap-height ^^nut-thk
+                  radius (* ^nut-hole-diameter 2)
+                  orientation (list
+                               (rotate 90 '(1 0 0))
+                               (translate (list 
+                                           (- (+ (/ ^^pipe-diameter 2) (/ ^^u-bolt-diameter 2) ^^pipe-od-clr-to-u-bolt))
+                                           (- (+ ^^nut-fixed-y-offset ^^rack-flange-thk))
+                                           0
+                                           )
+                                          )
+                               )
+                                
+                  )
+
+               
+
+              )
+  )
+
+

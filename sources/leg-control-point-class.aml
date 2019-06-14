@@ -1,0 +1,38 @@
+(in-package :aml)
+
+
+(define-class leg-control-point-class
+  :inherit-from (object)
+  :properties(
+              bottom-coordinates                      (default nil)
+              top-coordinates                         (default nil)
+              bottom-flange-length-coordinates        (default nil)
+              bottom-web-length-coordinates           (default nil)
+              bottom-web-thk-coordinates              (default nil)
+              bottom-flange-thk-coordinates           (default nil)
+              pt-on-beam-fro-clr-coordinates          (default nil)
+              )
+  :subobjects(
+              (leg-top-pt :class 'point-object
+                coordinates           ^^top-coordinates
+                )
+              (leg-bottom-pt :class 'point-object
+                coordinates          ^^bottom-coordinates
+                )
+              (bottom-flange-length-pt :class 'point-object
+                coordinates          ^^bottom-flange-length-coordinates
+                )
+              (bottom-web-length-pt :class 'point-object
+                coordinates          ^^bottom-web-length-coordinates
+                )
+              (bottom-web-thk-pt :class 'point-object
+                coordinates          ^^bottom-web-thk-coordinates
+                )
+              (bottom-flange-thk-pt :class 'point-object
+                coordinates          ^^bottom-flange-thk-coordinates
+                )
+              (leg-clr-pt :class 'point-object
+                coordinates          ^^pt-on-beam-fro-clr-coordinates
+                )
+              )
+  )

@@ -1,0 +1,63 @@
+(in-package :aml)
+
+(define-class Pipes-with-Parallel-Pattern-Structure-Support-style-01-drawings-class
+  :inherit-from (object)
+  :properties (
+               geometry-source-object (default nil)
+               )  
+  :subobjects (               
+               (Plan-view-drawing :class  'Pipes-with-Parallel-Pattern-Structure-Support-style-01-plan-view-drawing-layout-class
+                 viewport-0-objects-to-fit-within-limits-list (let* (
+                                                                     (list '())
+                                                                     )
+                                                                (loop 
+                                                                  for item in (children 
+                                                                               (the rack-series 
+                                                                                 (:from 
+                                                                                  (the superior superior geometry-source-object))))
+                                                                  do
+                                                                  (setf list (append list (list (the rack (:from item))) (children (the legs (:from item))) (children (the u-bolts (:from item)))))   
+                                                                  )
+                                                                list
+                                                                )
+
+                 viewport-0-objects-to-include-list ^viewport-0-objects-to-fit-within-limits-list
+                 viewports-percent-size-list '(70 70)
+                 )             
+               (Rack-drawings :class 'series-object
+                 class-expression 'Pipes-with-Parallel-Pattern-Structure-Support-style-01-rack-view-drawing-layout-class
+                 racks-list    (children (the rack-series (:from ^^geometry-source-object)))
+                 quantity      (length ^racks-list)
+                 init-form '(
+                             position                                     ^index
+                             Label                                        (if (> 10 ^index)
+                                                                            (format nil "PR0~d-DWG" ^index)
+                                                                            (format nil "PR~d-DWG" ^index)
+                                                                            )
+                             viewport-0-objects-to-fit-within-limits-list (append (list (the rack (:from (nth ^index ^^racks-list))))
+                                                                            (children (the legs (:from (nth ^index ^^racks-list))))
+                                                                            (children (the u-bolts (:from (nth ^index ^^racks-list))))
+                                                                            )
+                             viewport-0-objects-to-include-list           (append (list (the rack (:from (nth ^index ^^racks-list))))
+                                                                            (children (the legs (:from (nth ^index ^^racks-list))))
+                                                                            (children (the u-bolts (:from (nth ^index ^^racks-list))))
+                                                                            )
+                             viewport-2-objects-to-fit-within-limits-list  (list (first (children (the legs (:from (nth ^index ^^racks-list))))))
+                             viewport-2-objects-to-include-list            (list (first (children (the legs (:from (nth ^index ^^racks-list))))))
+                             
+                             viewport-1-objects-to-fit-within-limits-list   (list (first (last (children (the u-bolts (:from (nth ^index ^^racks-list)))))))                                                                            
+                             viewport-1-objects-to-include-list             (list (the rack (:from (nth ^index ^^racks-list))))
+                             
+                             viewport-3-objects-to-fit-within-limits-list  (list (first (children (the u-bolts (:from (nth ^index ^^racks-list))))))                                                                            
+                             viewport-3-objects-to-include-list            (list (first (children (the u-bolts (:from (nth ^index ^^racks-list)))))
+                                                                             (the rack (:from (nth ^index ^^racks-list)))
+                                                                             (first (children (the legs (:from (nth ^index ^^racks-list)))))
+                                                                             )
+                             
+                             viewports-percent-size-list                  '(40 40)
+                             viewports-1-percent-size-list                '(30 30)
+                             control-point-source-object                  (the control-points (:from (nth ^index ^^racks-list)))
+                             )
+                 )               
+               )
+)

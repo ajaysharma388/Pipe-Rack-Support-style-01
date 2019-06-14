@@ -1,0 +1,41 @@
+(in-package :aml)
+
+;;NUT CLASS
+;;Oriented in ZX such that nut-thread-height is in negative-Z-axis and nut-cap in X-ax
+
+(define-class nut-style-01-class
+  :inherit-from (difference-object );nut-component-mixin)
+  :properties (
+               nut-cap-height (default 0.25)
+               nut-thread-height !nut-cap-height
+               nut-hole-diameter (default 0.2)
+               radius (default 0.5)         ;;nut-cap-radius
+               side-number (default 6)
+              ; reference-coordinate-system (default nil)
+
+               object-list (list ^extrusion ^nut-thread-cyl)
+         ;;                   )
+ ;; :subobjects (              
+               (hexagonal-nut-cap-profile-class :class 'polygon-object
+                   dimension     2
+                   vertices      (loop
+                                   for i from 0 to (- ^^side-number 1)
+                                   do
+                                   collect (list (* ^^radius (cosd (* (/ 360 ^^side-number) i)))  (* ^radius (sind (* (/ 360 ^^side-number) i))) 0.0 )
+                                   )
+                   )
+               (extrusion :class 'extrusion-object
+                   swept-object  ^^hexagonal-nut-cap-profile-class
+                   distance      ^^nut-cap-height
+                   )
+               (nut-thread-cyl :class 'cylinder-object
+                   diameter      ^^nut-hole-diameter
+                   height        ^^nut-thread-height
+                   orientation   (translate (list 0 0 (/ ^^nut-cap-height 2)))
+                   )                        
+               )
+  )
+
+(define-method get-component-description nut-style-01-class ()
+  (format nil "Hex Nut ~a Dia.  " !radius )
+  )

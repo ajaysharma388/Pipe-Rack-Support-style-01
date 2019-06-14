@@ -1,0 +1,173 @@
+(in-package :aml)
+
+(define-class Pipes-with-Parallel-Pattern-Structure-Support-style-01-channel-class
+  :inherit-from (extrusion-object  channel-component-mixin)
+  :properties (
+               width            (default 1)
+               height           (default 1)
+               length			  (default 10)
+               flange-thickness ^thickness
+               web-thickness    ^thickness
+               thickness        (default .2)
+               fillet-radius    (default .05)
+               part-reference-coordinate-system-object nil
+               swept-object ^bounded-profile
+               distance ^length
+               vector '(0 0 1)
+;;;                )
+;;;   :subobjects (
+               (channel-coordinate-system :class 'coordinate-system-class
+                 reference-coordinate-system ^^part-reference-coordinate-system-object
+                 )
+               ;;point-objects
+               (point-00 :class 'point-object
+                 coordinates (list
+                              (/ ^^web-thickness -2)
+                              (/ ^^height 2)
+                              0
+                              )
+                 )
+               (point-01 :class 'point-object
+                 coordinates (list
+                              (/ ^^web-thickness -2)
+                              (/ ^^height -2)
+                              0
+                              )
+                 )
+               (point-02 :class 'point-object
+                 coordinates (list
+                              (/ ^^web-thickness 2)
+                              (- (/ ^^height 2) ^^flange-thickness)
+                              0
+                              )
+                 )
+               (point-03 :class 'point-object
+                 coordinates (list
+                              (/ ^^web-thickness 2)
+                              (-(- (/ ^^height 2) ^^flange-thickness))
+                              0
+                              )
+                 )
+               (point-04 :class 'point-object
+                 coordinates (list
+                              (- ^^width (/ ^^web-thickness 2))
+                              (/ ^^height 2)
+                              0
+                              )
+                 )
+               (point-05 :class 'point-object
+                 coordinates (list
+                              (- ^^width (/ ^^web-thickness 2))
+                              (- (/ ^^height 2) ^^flange-thickness)
+                              0
+                              )
+                 )
+               (point-06 :class 'point-object
+                 coordinates (list
+                              (- ^^width (/ ^^web-thickness 2))
+                              (-(- (/ ^^height 2) ^^flange-thickness))
+                              0
+                              )
+                 )
+               (point-07 :class 'point-object
+                 coordinates (list
+                              (- ^^width (/ ^^web-thickness 2))
+                              (/ ^^height -2)
+                              0
+                              )
+                 )            
+               ;;Line-objects
+               (line-00 :class 'line-object
+                 point1 (the superior superior point-00 coordinates)
+                 point2 (the superior superior point-01 coordinates)
+                 reference-coordinate-system ^^channel-coordinate-system
+                 )
+               (line-01 :class 'line-object
+                 point1 (the superior superior point-00 coordinates)
+                 point2 (the superior superior point-04 coordinates)
+                 reference-coordinate-system ^^channel-coordinate-system
+                 )
+               (line-02 :class 'line-object
+                 point1 (the superior superior point-01 coordinates)
+                 point2 (the superior superior point-07 coordinates)
+                 reference-coordinate-system ^^channel-coordinate-system
+                 )
+               (line-03 :class 'line-object
+                 point1 (the superior superior point-02 coordinates)
+                 point2 (the superior superior point-03 coordinates)
+                 reference-coordinate-system ^^channel-coordinate-system
+                 )
+               (line-04 :class 'line-object
+                 point1 (the superior superior point-02 coordinates)
+                 point2 (the superior superior point-05 coordinates)
+                 reference-coordinate-system ^^channel-coordinate-system
+                 )
+               (line-05 :class 'line-object
+                 point1 (the superior superior point-04 coordinates)
+                 point2 (the superior superior point-05 coordinates)
+                 reference-coordinate-system ^^channel-coordinate-system
+                 )
+               (line-06 :class 'line-object
+                 point1 (the superior superior point-06 coordinates)
+                 point2 (the superior superior point-03 coordinates)
+                 reference-coordinate-system ^^channel-coordinate-system
+                 )
+               (line-07 :class 'line-object
+                 point1 (the superior superior point-07 coordinates)
+                 point2 (the superior superior point-06 coordinates)
+                 reference-coordinate-system ^^channel-coordinate-system
+                 )
+               ;;fillets
+               (fillet-00 :class 'arc-fillet-from-2-primitives-class
+                 source-1-object ^^line-04
+                 source-2-object ^^line-05
+                 radius ^^fillet-radius
+                 selection-option 2
+                 reference-coordinate-system ^^channel-coordinate-system
+                 )
+               (fillet-01 :class 'arc-fillet-from-2-primitives-class
+                 source-1-object ^^line-03
+                 source-2-object (the superior superior fillet-00 line-primitive-1-object)
+                 radius ^^fillet-radius
+                 selection-option 3
+                 )
+               (fillet-02 :class 'arc-fillet-from-2-primitives-class
+                 source-1-object (the superior superior fillet-01 line-primitive-1-object)
+                 source-2-object ^^line-06
+                 radius ^^fillet-radius
+                 selection-option 2
+                 )
+               (fillet-03 :class 'arc-fillet-from-2-primitives-class
+                 source-1-object (the superior superior fillet-02 line-primitive-2-object)
+                 source-2-object ^^line-07
+                 radius ^^fillet-radius
+                 selection-option 2
+                 )
+               (profile :class 'sewn-object
+                 object-list (list
+                              ^^line-00
+                              ^^line-01
+                              ^^line-02
+                              (the superior superior fillet-00 line-primitive-2-object)
+                              (the superior superior fillet-01 line-primitive-2-object)
+                              (the superior superior fillet-02 line-primitive-1-object)
+                              (the superior superior fillet-03 line-primitive-1-object)
+                              (the superior superior fillet-03 line-primitive-2-object)
+                              ^^fillet-00
+                              ^^fillet-01
+                              ^^fillet-02
+                              ^^fillet-03
+                              )
+                 )
+               (bounded-profile :class 'bounded-object
+                 object-list (list ^^profile)
+                 orientation (list
+                              (translate (list  (/ ^^web-thickness 2) (/ ^^height -2) 0 ))
+                              )
+                 )
+               )
+  )
+;;; 
+;;; (define-method get-component-description Pipes-with-Parallel-Pattern-Structure-Support-style-01-channel-class()
+;;;   (format nil "C ~a X ~a X ~a." !height !width !thickness)
+;;;   )

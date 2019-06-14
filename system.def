@@ -1,0 +1,43 @@
+(in-package :aml)
+
+(define-system :Pipe-Rack-Support-style-01
+  :require-systems '(
+                    :pipe-supports-components-library
+                    )
+  :files '(
+           "nut-style-01-class.aml"
+           "Pipes-with-Parallel-Pattern-Structure-Support-style-01-L-shape-class.aml"
+           "Pipes-with-Parallel-Pattern-Structure-Support-style-01-u-bolt-class.aml"
+           "Pipes-with-Parallel-Pattern-Structure-Support-style-01-channel-class.aml"
+           "leg-control-point-class.aml"
+           "Pipes-with-Parallel-Pattern-Structure-Support-style-01-control-points-class.aml"
+           "Pipes-with-Parallel-Pattern-Structure-Support-style-01-class.aml"
+           "Pipes-with-Parallel-Pattern-Structure-Support-style-01-series-class.aml"
+           "Pipes-with-Parallel-Pattern-Structure-Support-style-01-plan-view-viewports-class.aml"
+           "Pipes-with-Parallel-Pattern-Structure-Support-style-01-rack-view-viewports-class.aml"
+	       "Pipes-with-Parallel-Pattern-Structure-Support-style-01-plan-view-dimensions-class.aml"	
+           "Pipes-with-Parallel-Pattern-Structure-Support-style-01-plan-view-drawing-layout-class.aml"
+           "Pipes-with-Parallel-Pattern-Structure-Support-style-01-rack-view-dimensions-class.aml"
+           "Pipes-with-Parallel-Pattern-Structure-Support-style-01-rack-view-drawing-layout-class.aml"
+           "Pipes-with-Parallel-Pattern-Structure-Support-style-01-drawings-class.aml"
+           "Pipes-with-Parallel-Pattern-Structure-Support-style-01-geometry-and-drawing-class.aml"
+           "Heating-Coil-Pipes-Support-manager-form-class.aml"
+           "Heating-Coil-Pipes-Support-Class.aml"
+           )
+  )
+
+(vgl::set-model-scale-factor 0.2)
+
+
+           
+
+
+           
+
+           
+
+
+           
+  
+   
+
